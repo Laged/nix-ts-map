@@ -120,6 +120,30 @@ export const resolvers: Resolvers<Context> = {
         aircraftCount: row.aircraftCount,
       }));
     },
+
+    flightStats: async (_, __, { dbClient }) => {
+      const query = `
+        SELECT 
+          count() as totalEvents,
+          uniq(icao24) as uniqueFlights
+        FROM flight_events
+      `;
+
+      const result = await dbClient.query({
+        query,
+        format: 'JSONEachRow',
+      });
+
+      const data = await result.json<Array<{
+        totalEvents: number;
+        uniqueFlights: number;
+      }>>();
+
+      return {
+        totalEvents: data[0]?.totalEvents || 0,
+        uniqueFlights: data[0]?.uniqueFlights || 0,
+      };
+    },
   },
 };
 

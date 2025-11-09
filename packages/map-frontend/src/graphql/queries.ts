@@ -21,3 +21,12 @@ export const GET_HEX_GRID = gql`
   }
 `;
 
+export const GET_FLIGHT_STATS = gql`
+  query GetFlightStats {
+    flightStats {
+      totalEvents
+      uniqueFlights
+    }
+  }
+`;
+

@@ -3,7 +3,7 @@ import { DeckGL } from '@deck.gl/react';
 import { H3HexagonLayer } from '@deck.gl/geo-layers';
 import { ScatterplotLayer } from '@deck.gl/layers';
 import { Map } from 'react-map-gl/maplibre';
-import { GET_LATEST_POSITIONS, GET_HEX_GRID } from '../graphql/queries';
+import { GET_LATEST_POSITIONS, GET_HEX_GRID, GET_FLIGHT_STATS } from '../graphql/queries';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useState } from 'react';
 
@@ -74,6 +74,12 @@ export function FlightMap() {
       to: now,
     },
     pollInterval: 60000,
+    errorPolicy: 'all',
+  });
+
+  // Fetch flight statistics
+  const { data: statsData, loading: statsLoading } = useQuery(GET_FLIGHT_STATS, {
+    pollInterval: 30000, // Poll every 30 seconds
     errorPolicy: 'all',
   });
 

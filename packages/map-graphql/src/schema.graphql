@@ -10,6 +10,11 @@ type Query {
   Fetches aggregated flight density for a hexagonal grid.
   """
   hexGrid(resolution: Int!, bbox: [Float!]!, from: DateTime!, to: DateTime!): [HexGridCell!]!
+
+  """
+  Fetches statistics about scraped flight data.
+  """
+  flightStats: FlightStats!
 }
 
 type AircraftPosition {
@@ -23,5 +28,10 @@ type AircraftPosition {
 type HexGridCell {
   h3Index: String!
   aircraftCount: Int!
+}
+
+type FlightStats {
+  totalEvents: Int!
+  uniqueFlights: Int!
 }
 
