@@ -144,8 +144,8 @@ export function FlightMap() {
             Math.floor(intensity * 128 + 127),
           ];
         } else {
-          // Gray, almost transparent for hexes without data
-          return [128, 128, 128, 20];
+          // Gray, more visible for hexes without data
+          return [128, 128, 128, 80];
         }
       },
       getElevation: (d) => (d.aircraftCount || 0) * 100,
@@ -153,7 +153,7 @@ export function FlightMap() {
       extruded: true,
       pickable: true,
       coverage: 1,
-      opacity: 0.3,
+      opacity: 0.6,
       wireframe: false,
     }),
 
@@ -278,12 +278,15 @@ export function FlightMap() {
             <div style={{ marginBottom: '4px' }}>
               <strong>Flights:</strong> {stats.uniqueFlights.toLocaleString()}
             </div>
-            <div>
+            <div style={{ marginBottom: '4px' }}>
               <strong>Trails:</strong> {stats.totalEvents.toLocaleString()}
+            </div>
+            <div>
+              <strong>Hexes:</strong> {mergedHexGrid.length.toLocaleString()}
             </div>
             {hexGridDataFiltered.length > 0 && (
               <div style={{ marginTop: '4px', fontSize: '12px', opacity: 0.7 }}>
-                Hexagons: {hexGridDataFiltered.length}
+                With data: {hexGridDataFiltered.length}
               </div>
             )}
           </div>
