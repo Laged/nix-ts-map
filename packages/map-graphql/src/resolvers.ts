@@ -92,9 +92,10 @@ export const resolvers: Resolvers<Context> = {
     hexGrid: async (_, { resolution, bbox, from, to }, { dbClient }) => {
       const [minLat, minLon, maxLat, maxLon] = bbox;
       
-      // The materialized view uses h3_res8, so we'll query that and convert to requested resolution
-      const h3ResColumn = 'h3_res8'; // Materialized view only has h3_res8
-      const targetResolution = resolution;
+      // Query the materialized view for the requested resolution directly
+      // All resolutions are pre-computed at write-time, so no conversion needed
+      const tableName = `flights_per_hex_per_minute_r${resolution}`;
+      const h3ResColumn = `h3_res${resolution}`;
 
       // Query ALL data without time filters for now
       // Filter out invalid H3 indexes (like 'test' or empty strings)
@@ -102,7 +103,7 @@ export const resolvers: Resolvers<Context> = {
         SELECT 
           ${h3ResColumn} as h3Index,
           uniqMerge(aircraft_count) as aircraftCount
-        FROM flights_per_hex_per_minute FINAL
+        FROM ${tableName} FINAL
         WHERE ${h3ResColumn} != ''
           AND ${h3ResColumn} != 'test'
           AND length(${h3ResColumn}) > 0
@@ -110,7 +111,7 @@ export const resolvers: Resolvers<Context> = {
         HAVING aircraftCount > 0
       `;
 
-      console.log('[GraphQL] Hex grid query (resolution', targetResolution, '):', query);
+      console.log('[GraphQL] Hex grid query (resolution', resolution, '):', query);
 
       const result = await dbClient.query({
         query,
@@ -122,60 +123,15 @@ export const resolvers: Resolvers<Context> = {
         aircraftCount: number;
       }>>();
 
-      console.log('[GraphQL] Hex grid query result (r8):', data.length, 'hexes');
-
-      // Convert from r8 to target resolution and aggregate counts
-      if (targetResolution === 8) {
-        // No conversion needed
-        return data.map((row) => ({
-          h3Index: row.h3Index,
-          aircraftCount: row.aircraftCount,
-        }));
+      console.log('[GraphQL] Hex grid query result (r' + resolution + '):', data.length, 'hexes');
+      if (data.length > 0) {
+        console.log('[GraphQL] Sample hex data:', data.slice(0, 3));
       }
 
-      // Convert to target resolution and aggregate
-      const aggregated = new Map<string, number>();
-      
-      for (const row of data) {
-        try {
-          // Convert h3_res8 to target resolution
-          let parentIndex = row.h3Index;
-          
-          // Get resolution of the current index
-          const currentRes = h3.h3GetResolution(row.h3Index);
-          
-          // Convert to target resolution
-          if (currentRes > targetResolution) {
-            // Go up to parent (coarser resolution)
-            for (let i = currentRes; i > targetResolution; i--) {
-              parentIndex = h3.h3ToParent(parentIndex, i - 1);
-            }
-          } else if (currentRes < targetResolution) {
-            // This shouldn't happen since we're starting from r8
-            console.warn('[GraphQL] Unexpected resolution:', currentRes, 'for index:', row.h3Index);
-            continue;
-          }
-          
-          // Aggregate counts
-          const currentCount = aggregated.get(parentIndex) || 0;
-          aggregated.set(parentIndex, currentCount + row.aircraftCount);
-        } catch (error) {
-          console.error('[GraphQL] Error converting H3 index:', row.h3Index, error);
-          continue;
-        }
-      }
-
-      const converted = Array.from(aggregated.entries()).map(([h3Index, aircraftCount]) => ({
-        h3Index,
-        aircraftCount,
+      return data.map((row) => ({
+        h3Index: row.h3Index,
+        aircraftCount: row.aircraftCount,
       }));
-
-      console.log('[GraphQL] Converted to resolution', targetResolution, ':', converted.length, 'hexes');
-      if (converted.length > 0) {
-        console.log('[GraphQL] Sample converted hex data:', converted.slice(0, 3));
-      }
-
-      return converted;
     },
 
     flightStats: async (_, __, { dbClient }) => {

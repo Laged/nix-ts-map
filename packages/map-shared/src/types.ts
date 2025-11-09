@@ -112,17 +112,32 @@ export interface OpenSkyFlightDetails extends BaseFlightDetails {
 export type FlightDetails = BaseFlightDetails | Fr24FlightDetails | OpenSkyFlightDetails;
 
 /**
- * FlightEvent enriched with H3 geospatial indexes at multiple resolutions.
+ * FlightEvent enriched with H3 geospatial indexes at all resolutions (r0-r10).
  * Used for efficient spatial queries and aggregations.
+ * All resolutions are calculated at write-time by the scraper.
  */
 export interface FlightEventWithH3 extends FlightEvent {
-  /** H3 index at resolution 4 (coarse, ~110km hexagons) */
+  /** H3 index at resolution 0 (coarsest, ~1107km hexagons) */
+  h3_res0: H3Index;
+  /** H3 index at resolution 1 (~418km hexagons) */
+  h3_res1: H3Index;
+  /** H3 index at resolution 2 (~158km hexagons) */
+  h3_res2: H3Index;
+  /** H3 index at resolution 3 (~59km hexagons) */
+  h3_res3: H3Index;
+  /** H3 index at resolution 4 (~22km hexagons) */
   h3_res4: H3Index;
-  
-  /** H3 index at resolution 6 (medium, ~12km hexagons) */
+  /** H3 index at resolution 5 (~8km hexagons) */
+  h3_res5: H3Index;
+  /** H3 index at resolution 6 (~3km hexagons) */
   h3_res6: H3Index;
-  
-  /** H3 index at resolution 8 (fine, ~0.5km hexagons) */
+  /** H3 index at resolution 7 (~1km hexagons) */
+  h3_res7: H3Index;
+  /** H3 index at resolution 8 (~0.5km hexagons) */
   h3_res8: H3Index;
+  /** H3 index at resolution 9 (~0.2km hexagons) */
+  h3_res9: H3Index;
+  /** H3 index at resolution 10 (finest, ~0.07km hexagons) */
+  h3_res10: H3Index;
 }
 
