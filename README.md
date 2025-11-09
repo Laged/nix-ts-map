@@ -280,6 +280,40 @@ bun run packages/map-scraper/src/index.ts
 cd packages/map-frontend && bun dev
 ```
 
+## Database Management
+
+### Reset Database (Start Fresh)
+
+To wipe all data and start scraping from scratch:
+
+```bash
+# Make sure ClickHouse is running first
+nix develop
+bash scripts/reset-database.sh
+```
+
+**⚠️ WARNING:** This will:
+- Drop all tables and materialized views
+- Delete all flight data
+- Clear all aggregated hex data
+- Re-apply all migrations to recreate empty schema
+
+This is useful when you want to:
+- Start scraping from scratch
+- Clear old test data
+- Reset after schema changes
+
+The script will prompt for confirmation before proceeding.
+
+### Apply Migrations Manually
+
+If you need to apply migrations manually:
+
+```bash
+nix develop
+bash scripts/apply-migrations.sh
+```
+
 ## Testing
 
 ### Run All Tests
@@ -320,7 +354,8 @@ nix-ts-map/
 │       └── 004_multi_resolution_views.sql
 ├── plans/                 # Sprint planning documents
 ├── scripts/
-│   └── apply-migrations.sh
+│   ├── apply-migrations.sh    # Apply database migrations
+│   └── reset-database.sh      # Wipe all data and reset database
 └── process-compose.yml    # Service orchestration config
 ```
 
