@@ -94,6 +94,7 @@ export const resolvers: Resolvers<Context> = {
 
       // First, get all H3 indexes in the bounding box
       // This is a simplified approach - in production, you'd want to use H3's polyfill
+      // Filter out invalid H3 indexes (like 'test' or empty strings)
       const query = `
         SELECT 
           ${h3ResColumn} as h3Index,
@@ -101,6 +102,9 @@ export const resolvers: Resolvers<Context> = {
         FROM flights_per_hex_per_minute FINAL
         WHERE minute >= toDateTime(${fromDate.getTime() / 1000})
           AND minute <= toDateTime(${toDate.getTime() / 1000})
+          AND ${h3ResColumn} != ''
+          AND ${h3ResColumn} != 'test'
+          AND length(${h3ResColumn}) > 0
         GROUP BY h3Index
         HAVING aircraftCount > 0
       `;

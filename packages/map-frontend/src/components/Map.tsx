@@ -85,11 +85,16 @@ export function FlightMap() {
 
   const stats = statsData?.flightStats;
 
+  // Filter out invalid H3 indexes and prepare hex grid data
+  const hexGridDataFiltered = (hexGridData?.hexGrid || []).filter(
+    (d) => d.h3Index && d.h3Index !== 'test' && d.h3Index.length > 0
+  );
+
   const layers = [
     // H3 Hexagon Layer
     new H3HexagonLayer({
       id: 'h3-hexagon-layer',
-      data: hexGridData?.hexGrid || [],
+      data: hexGridDataFiltered,
       getHexagon: (d) => d.h3Index,
       getFillColor: (d) => {
         const count = d.aircraftCount || 0;
@@ -106,6 +111,8 @@ export function FlightMap() {
       elevationScale: 1,
       extruded: true,
       pickable: true,
+      coverage: 1,
+      opacity: 0.6,
     }),
 
     // Scatterplot Layer for individual aircraft
