@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Apply ClickHouse migrations
+# Apply ClickHouse database initialization
 # Usage: ./scripts/apply-migrations.sh
 
 set -e
@@ -12,11 +12,7 @@ if [ -z "$CLICKHOUSE_PORT" ]; then
     CLICKHOUSE_PORT="9000"
 fi
 
-echo "Applying ClickHouse migrations..."
-for migration in db/migrations/*.sql; do
-  echo "Applying $migration..."
-  clickhouse-client --host="$CLICKHOUSE_HOST" --port="$CLICKHOUSE_PORT" --multiquery < "$migration"
-done
+echo "Applying database initialization..."
+clickhouse-client --host="$CLICKHOUSE_HOST" --port="$CLICKHOUSE_PORT" --multiquery < db/init-db.sql
 
-echo "✅ Migrations applied successfully!"
-
+echo "✅ Database initialized successfully!"

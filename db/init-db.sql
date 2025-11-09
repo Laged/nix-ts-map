@@ -1,4 +1,85 @@
--- Materialized views for multiple H3 resolutions
+-- Initialize ClickHouse database schema
+-- This script creates all tables and materialized views
+
+-- Initial schema for flight_events table
+-- This table stores point-in-time snapshots of flight positions and states
+CREATE TABLE IF NOT EXISTS flight_events (
+    -- Core flight data
+    icao24 String,
+    timestamp DateTime,
+    latitude Float64,
+    longitude Float64,
+    altitude Float64,
+    heading Float64,
+    groundSpeed Float64,
+    verticalRate Float64,
+
+    -- Metadata
+    source LowCardinality(String), -- Good for repeated strings
+
+    -- H3 geospatial indexes at all resolutions (r0-r10)
+    -- All resolutions are calculated at write-time by the scraper
+    h3_res0 String,
+    h3_res1 String,
+    h3_res2 String,
+    h3_res3 String,
+    h3_res4 String,
+    h3_res5 String,
+    h3_res6 String,
+    h3_res7 String,
+    h3_res8 String,
+    h3_res9 String,
+    h3_res10 String
+
+) ENGINE = MergeTree()
+PARTITION BY toYYYYMM(timestamp) -- Partition by month for efficient time-based queries
+ORDER BY (icao24, timestamp); -- The primary index, crucial for performance
+
+-- Latest Flight Position View
+-- Provides the most recent position for every aircraft
+CREATE TABLE IF NOT EXISTS latest_flight_positions (
+    icao24 String,
+    last_seen DateTime,
+    latest_lat Float64,
+    latest_lon Float64,
+    latest_alt Float64
+) ENGINE = AggregatingMergeTree()
+ORDER BY icao24;
+
+CREATE MATERIALIZED VIEW IF NOT EXISTS latest_flight_position_mv 
+TO latest_flight_positions 
+AS
+SELECT
+    icao24,
+    max(timestamp) as last_seen,
+    argMax(latitude, timestamp) as latest_lat,
+    argMax(longitude, timestamp) as latest_lon,
+    argMax(altitude, timestamp) as latest_alt
+FROM flight_events
+WHERE h3_res6 != '' -- Only process events with H3 indexes
+GROUP BY icao24;
+
+-- Flights Per Hex Per Minute View (legacy, using r8)
+-- Aggregates flight counts per H3 hexagon per minute
+CREATE TABLE IF NOT EXISTS flights_per_hex_per_minute (
+    h3_res8 String,
+    minute DateTime,
+    aircraft_count AggregateFunction(uniq, String)
+) ENGINE = AggregatingMergeTree()
+ORDER BY (h3_res8, minute);
+
+CREATE MATERIALIZED VIEW IF NOT EXISTS flights_per_hex_per_minute_mv 
+TO flights_per_hex_per_minute 
+AS
+SELECT
+    h3_res8,
+    toStartOfMinute(timestamp) AS minute,
+    uniqState(icao24) as aircraft_count
+FROM flight_events
+WHERE h3_res8 != '' -- Only process events with H3 indexes
+GROUP BY h3_res8, minute;
+
+-- Materialized views for multiple H3 resolutions (r0-r10)
 -- These views aggregate flight counts per hexagon per minute at different resolutions
 -- Data is aggregated at write-time, so queries are fast
 
@@ -116,7 +197,7 @@ FROM flight_events
 WHERE h3_res5 != '' AND h3_res5 != 'test'
 GROUP BY h3_res5, minute;
 
--- Resolution 6 (already exists in flight_events, but create view)
+-- Resolution 6
 CREATE TABLE IF NOT EXISTS flights_per_hex_per_minute_r6 (
     h3_res6 String,
     minute DateTime,
@@ -154,9 +235,24 @@ FROM flight_events
 WHERE h3_res7 != '' AND h3_res7 != 'test'
 GROUP BY h3_res7, minute;
 
--- Resolution 8 (rename existing table/view to match pattern)
--- Note: The existing flights_per_hex_per_minute uses h3_res8, so we'll keep it
--- but we can also create r8-specific views if needed
+-- Resolution 8
+CREATE TABLE IF NOT EXISTS flights_per_hex_per_minute_r8 (
+    h3_res8 String,
+    minute DateTime,
+    aircraft_count AggregateFunction(uniq, String)
+) ENGINE = AggregatingMergeTree()
+ORDER BY (h3_res8, minute);
+
+CREATE MATERIALIZED VIEW IF NOT EXISTS flights_per_hex_per_minute_r8_mv 
+TO flights_per_hex_per_minute_r8 
+AS
+SELECT
+    h3_res8,
+    toStartOfMinute(timestamp) AS minute,
+    uniqState(icao24) as aircraft_count
+FROM flight_events
+WHERE h3_res8 != '' AND h3_res8 != 'test'
+GROUP BY h3_res8, minute;
 
 -- Resolution 9
 CREATE TABLE IF NOT EXISTS flights_per_hex_per_minute_r9 (
