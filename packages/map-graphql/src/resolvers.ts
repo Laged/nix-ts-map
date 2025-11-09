@@ -42,8 +42,8 @@ export const resolvers: Resolvers<Context> = {
   Query: {
     latestAircraftPositions: async (_, { bbox, since }, { dbClient }) => {
       const [minLat, minLon, maxLat, maxLon] = bbox;
-      const sinceDate = new Date(since * 1000);
 
+      // Query ALL data without time filter for now
       const query = `
         SELECT 
           icao24,
@@ -52,13 +52,14 @@ export const resolvers: Resolvers<Context> = {
           latest_alt as altitude,
           last_seen
         FROM latest_flight_positions FINAL
-        WHERE last_seen >= toDateTime(${sinceDate.getTime() / 1000})
-          AND latest_lat >= ${minLat}
+        WHERE latest_lat >= ${minLat}
           AND latest_lat <= ${maxLat}
           AND latest_lon >= ${minLon}
           AND latest_lon <= ${maxLon}
         ORDER BY last_seen DESC
       `;
+
+      console.log('[GraphQL] Latest positions query:', query);
 
       const result = await dbClient.query({
         query,
