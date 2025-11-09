@@ -92,7 +92,7 @@
             processes = {
               # ClickHouse database service
               "nix-ts-map-db" = {
-                command = "${pkgs.bash}/bin/bash -c '${pkgs.clickhouse}/bin/clickhouse-server 2>&1 | ${pkgs.coreutils}/bin/tee ./logs/clickhouse.log'";
+                command = "${pkgs.bash}/bin/bash -c 'cd $PWD && ${pkgs.clickhouse}/bin/clickhouse-server --config-file=./db/clickhouse-config.xml 2>&1 | ${pkgs.coreutils}/bin/tee ./logs/clickhouse.log'";
                 availability.restart = "always";
                 readiness_probe = {
                   exec = {
@@ -144,6 +144,10 @@
                           }
                           ${pkgs.clickhouse}/bin/clickhouse-client --multiquery < ${./db/migrations/003_materialized_views.sql} > ./logs/migration-003.log 2>&1 || {
                             echo "✗ Migration 003 failed. Check ./logs/migration-003.log"
+                            exit 1
+                          }
+                          ${pkgs.clickhouse}/bin/clickhouse-client --multiquery < ${./db/migrations/004_multi_resolution_views.sql} > ./logs/migration-004.log 2>&1 || {
+                            echo "✗ Migration 004 failed. Check ./logs/migration-004.log"
                             exit 1
                           }
                           echo "✓ Migrations applied"
