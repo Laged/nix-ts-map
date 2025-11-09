@@ -111,7 +111,7 @@ export function FlightMap() {
   // Create a map of h3Index to aircraftCount for quick lookup
   const dataMap = useMemo(() => {
     const map = new Map<string, number>();
-    hexGridDataFiltered.forEach((d) => {
+    hexGridDataFiltered.forEach((d: { h3Index: string; aircraftCount: number }) => {
       map.set(d.h3Index, d.aircraftCount);
     });
     return map;
