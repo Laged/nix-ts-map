@@ -84,30 +84,27 @@ export const resolvers: Resolvers<Context> = {
 
     hexGrid: async (_, { resolution, bbox, from, to }, { dbClient }) => {
       const [minLat, minLon, maxLat, maxLon] = bbox;
-      const fromDate = new Date(from * 1000);
-      const toDate = new Date(to * 1000);
       
       // Map resolution to available H3 column
       // The materialized view uses h3_res8, so we'll use that for now
       // In the future, we could create separate views for different resolutions
       const h3ResColumn = 'h3_res8'; // Materialized view only has h3_res8
 
-      // First, get all H3 indexes in the bounding box
-      // This is a simplified approach - in production, you'd want to use H3's polyfill
+      // Query ALL data without time filters for now
       // Filter out invalid H3 indexes (like 'test' or empty strings)
       const query = `
         SELECT 
           ${h3ResColumn} as h3Index,
           uniqMerge(aircraft_count) as aircraftCount
         FROM flights_per_hex_per_minute FINAL
-        WHERE minute >= toDateTime(${fromDate.getTime() / 1000})
-          AND minute <= toDateTime(${toDate.getTime() / 1000})
-          AND ${h3ResColumn} != ''
+        WHERE ${h3ResColumn} != ''
           AND ${h3ResColumn} != 'test'
           AND length(${h3ResColumn}) > 0
         GROUP BY h3Index
         HAVING aircraftCount > 0
       `;
+
+      console.log('[GraphQL] Hex grid query:', query);
 
       const result = await dbClient.query({
         query,
@@ -118,6 +115,11 @@ export const resolvers: Resolvers<Context> = {
         h3Index: string;
         aircraftCount: number;
       }>>();
+
+      console.log('[GraphQL] Hex grid query result:', data.length, 'hexes');
+      if (data.length > 0) {
+        console.log('[GraphQL] Sample hex data:', data.slice(0, 3));
+      }
 
       return data.map((row) => ({
         h3Index: row.h3Index,
