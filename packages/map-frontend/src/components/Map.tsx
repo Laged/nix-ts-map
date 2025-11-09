@@ -90,12 +90,6 @@ export function FlightMap() {
     },
     pollInterval: 60000, // Poll every 60 seconds
     errorPolicy: 'all', // Continue even if there's an error
-    onCompleted: (data) => {
-      console.log('[FlightMap] Latest positions query completed:', data?.latestAircraftPositions?.length || 0, 'positions');
-    },
-    onError: (error) => {
-      console.error('[FlightMap] Latest positions query error:', error);
-    },
   });
 
   // Fetch hex grid data
@@ -108,13 +102,26 @@ export function FlightMap() {
     },
     pollInterval: 60000,
     errorPolicy: 'all',
-    onCompleted: (data) => {
-      console.log('[FlightMap] Hex grid query completed:', data?.hexGrid?.length || 0, 'hexes');
-    },
-    onError: (error) => {
-      console.error('[FlightMap] Hex grid query error:', error);
-    },
   });
+
+  // Debug logging for query results (using useEffect instead of deprecated callbacks)
+  useEffect(() => {
+    if (positionsData) {
+      console.log('[FlightMap] Latest positions query completed:', positionsData?.latestAircraftPositions?.length || 0, 'positions');
+    }
+    if (positionsError) {
+      console.error('[FlightMap] Latest positions query error:', positionsError);
+    }
+  }, [positionsData, positionsError]);
+
+  useEffect(() => {
+    if (hexGridData) {
+      console.log('[FlightMap] Hex grid query completed:', hexGridData?.hexGrid?.length || 0, 'hexes');
+    }
+    if (hexGridError) {
+      console.error('[FlightMap] Hex grid query error:', hexGridError);
+    }
+  }, [hexGridData, hexGridError]);
 
   // Fetch flight statistics
   const { data: statsData, loading: statsLoading } = useQuery(GET_FLIGHT_STATS, {
