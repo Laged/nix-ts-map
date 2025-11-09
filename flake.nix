@@ -7,6 +7,9 @@
     flake-parts.url = "github:hercules-ci/flake-parts";
     process-compose-flake.url = "github:Platonic-Systems/process-compose-flake";
   };
+  
+  # Use the latest Node.js 22.x from nixpkgs
+  # nodejs_22 in nixos-24.11 should be 22.12+ or later
 
   outputs = inputs:
     inputs.flake-parts.lib.mkFlake { inherit inputs; } {
