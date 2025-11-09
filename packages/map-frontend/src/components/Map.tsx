@@ -45,7 +45,7 @@ const INITIAL_VIEW_STATE = calculateFinlandViewState();
 export function FlightMap() {
   const [viewState, setViewState] = useState(INITIAL_VIEW_STATE);
   const [baseHexGrid, setBaseHexGrid] = useState<Array<{ h3Index: string; aircraftCount: number }>>([]);
-  const [resolution, setResolution] = useState(2); // Default to r2
+  const [resolution, setResolution] = useState(3); // Default to r3
 
   // Load cached hex polyfill data based on selected resolution
   useEffect(() => {
@@ -89,6 +89,12 @@ export function FlightMap() {
     },
     pollInterval: 60000, // Poll every 60 seconds
     errorPolicy: 'all', // Continue even if there's an error
+    onCompleted: (data) => {
+      console.log('[FlightMap] Latest positions query completed:', data?.latestAircraftPositions?.length || 0, 'positions');
+    },
+    onError: (error) => {
+      console.error('[FlightMap] Latest positions query error:', error);
+    },
   });
 
   // Fetch hex grid data
@@ -101,6 +107,12 @@ export function FlightMap() {
     },
     pollInterval: 60000,
     errorPolicy: 'all',
+    onCompleted: (data) => {
+      console.log('[FlightMap] Hex grid query completed:', data?.hexGrid?.length || 0, 'hexes');
+    },
+    onError: (error) => {
+      console.error('[FlightMap] Hex grid query error:', error);
+    },
   });
 
   // Fetch flight statistics
@@ -116,21 +128,45 @@ export function FlightMap() {
     (d: { h3Index: string; aircraftCount: number }) => d.h3Index && d.h3Index !== 'test' && d.h3Index.length > 0
   );
 
+  // Debug logging
+  useEffect(() => {
+    console.log('[FlightMap] Resolution:', resolution);
+    console.log('[FlightMap] Base hex grid count:', baseHexGrid.length);
+    console.log('[FlightMap] Hex grid data filtered count:', hexGridDataFiltered.length);
+    console.log('[FlightMap] Latest positions count:', positionsData?.latestAircraftPositions?.length || 0);
+    if (hexGridDataFiltered.length > 0) {
+      const maxCount = Math.max(...hexGridDataFiltered.map(d => d.aircraftCount));
+      const minCount = Math.min(...hexGridDataFiltered.map(d => d.aircraftCount));
+      console.log('[FlightMap] Aircraft count range:', { min: minCount, max: maxCount });
+    }
+  }, [resolution, baseHexGrid.length, hexGridDataFiltered.length, positionsData?.latestAircraftPositions?.length]);
+
   // Create a map of h3Index to aircraftCount for quick lookup
   const dataMap = useMemo(() => {
     const map = new Map<string, number>();
     hexGridDataFiltered.forEach((d: { h3Index: string; aircraftCount: number }) => {
       map.set(d.h3Index, d.aircraftCount);
     });
+    console.log('[FlightMap] Data map size:', map.size);
     return map;
+  }, [hexGridDataFiltered]);
+
+  // Calculate max aircraft count for heatmap normalization
+  const maxAircraftCount = useMemo(() => {
+    if (hexGridDataFiltered.length === 0) return 1;
+    const max = Math.max(...hexGridDataFiltered.map(d => d.aircraftCount));
+    console.log('[FlightMap] Max aircraft count for heatmap:', max);
+    return max || 1;
   }, [hexGridDataFiltered]);
 
   // Merge base hex grid with data
   const mergedHexGrid = useMemo(() => {
-    return baseHexGrid.map((hex: { h3Index: string; aircraftCount: number }) => ({
+    const merged = baseHexGrid.map((hex: { h3Index: string; aircraftCount: number }) => ({
       ...hex,
       aircraftCount: dataMap.get(hex.h3Index) || 0,
     }));
+    console.log('[FlightMap] Merged hex grid count:', merged.length);
+    return merged;
   }, [baseHexGrid, dataMap]);
 
   const layers = [
@@ -164,16 +200,22 @@ export function FlightMap() {
       wireframe: false,
     }),
 
-    // Scatterplot Layer for individual aircraft
+    // Scatterplot Layer for individual aircraft - latest positions as white circles
     new ScatterplotLayer({
       id: 'scatterplot-layer',
       data: positionsData?.latestAircraftPositions || [],
-      getPosition: (d) => [d.longitude, d.latitude],
-      getRadius: 100,
-      getFillColor: [255, 140, 0, 200],
-      radiusMinPixels: 2,
-      radiusMaxPixels: 10,
+      getPosition: (d) => {
+        console.log('[FlightMap] Scatterplot position:', { longitude: d.longitude, latitude: d.latitude });
+        return [d.longitude, d.latitude];
+      },
+      getRadius: 150,
+      getFillColor: [255, 255, 255, 255], // White, fully opaque
+      radiusMinPixels: 3,
+      radiusMaxPixels: 8,
       pickable: true,
+      stroked: true,
+      getLineColor: [200, 200, 200, 200], // Light gray border
+      lineWidthMinPixels: 1,
     }),
   ];
 
