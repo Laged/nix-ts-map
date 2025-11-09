@@ -1,0 +1,32 @@
+[
+  {
+    "hex_id": "8108bffffffffff",
+    "resolution": 1,
+    "center_lat": 60.19121804861819,
+    "center_lon": 18.258530119185007
+  },
+  {
+    "hex_id": "8108fffffffffff",
+    "resolution": 1,
+    "center_lat": 66.46965946461606,
+    "center_lon": 23.789852222644097
+  },
+  {
+    "hex_id": "81113ffffffffff",
+    "resolution": 1,
+    "center_lat": 60.70601123630686,
+    "center_lon": 31.280796389834947
+  },
+  {
+    "hex_id": "81097ffffffffff",
+    "resolution": 1,
+    "center_lat": 70.405910143889,
+    "center_lon": 8.788269518882192
+  },
+  {
+    "hex_id": "81013ffffffffff",
+    "resolution": 1,
+    "center_lat": 72.68049153144916,
+    "center_lon": 28.643188666861487
+  }
+]

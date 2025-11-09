@@ -1,0 +1,67 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Build outputs
+dist/
+build/
+*.tsbuildinfo
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+bun.lockb
+logs/
+
+# Nix artifacts
+result
+result-*
+.direnv/
+.drv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+coverage/
+.nyc_output/
+
+# Temporary files
+*.tmp
+*.temp
+
+# ClickHouse data directories (created at runtime)
+data/
+metadata/
+metadata_dropped/
+store/
+tmp/
+flags/
+format_schemas/
+dictionaries_lib/
+named_collections/
+preprocessed_configs/
+user_defined/
+user_files/
+user_scripts/
+uuid
+status
+
+# Examples (not needed in production)
+examples/

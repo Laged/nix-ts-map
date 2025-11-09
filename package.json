@@ -1,0 +1,16 @@
+{
+  "name": "nix-ts-map",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "test": "bun test --workspaces"
+  },
+  "devDependencies": {
+    "unenv": "^1.10.0"
+  }
+}
+

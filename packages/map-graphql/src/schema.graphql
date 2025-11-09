@@ -1,0 +1,37 @@
+scalar DateTime
+
+type Query {
+  """
+  Fetches the most recent known position for all aircraft within a given time window and bounding box.
+  """
+  latestAircraftPositions(bbox: [Float!]!, since: DateTime!): [AircraftPosition!]!
+
+  """
+  Fetches aggregated flight density for a hexagonal grid.
+  """
+  hexGrid(resolution: Int!, bbox: [Float!]!, from: DateTime!, to: DateTime!): [HexGridCell!]!
+
+  """
+  Fetches statistics about scraped flight data.
+  """
+  flightStats: FlightStats!
+}
+
+type AircraftPosition {
+  icao24: String!
+  latitude: Float!
+  longitude: Float!
+  altitude: Float!
+  lastSeen: DateTime!
+}
+
+type HexGridCell {
+  h3Index: String!
+  aircraftCount: Int!
+}
+
+type FlightStats {
+  totalEvents: Int!
+  uniqueFlights: Int!
+}
+

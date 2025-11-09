@@ -1,0 +1,30 @@
+{
+  "name": "@map/graphql",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "start": "bun run src/index.ts",
+    "codegen": "graphql-codegen --config codegen.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@apollo/server": "^4.11.0",
+    "@as-integrations/fastify": "^2.1.0",
+    "@fastify/cors": "^10.0.1",
+    "@map/shared": "workspace:*",
+    "@clickhouse/client": "^0.2.9",
+    "fastify": "^5.1.0",
+    "graphql": "^16.9.0",
+    "graphql-tag": "^2.12.6",
+    "h3-js": "^4.1.0"
+  },
+  "devDependencies": {
+    "@graphql-codegen/cli": "^5.0.2",
+    "@graphql-codegen/typescript": "^4.0.6",
+    "@graphql-codegen/typescript-resolvers": "^4.0.3",
+    "@types/node": "^22.0.0",
+    "typescript": "^5.6.0"
+  }
+}
+

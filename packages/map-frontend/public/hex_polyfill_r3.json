@@ -1,0 +1,554 @@
+[
+  {
+    "hex_id": "83112efffffffff",
+    "resolution": 3,
+    "center_lat": 62.445851128641785,
+    "center_lon": 29.373523967744223
+  },
+  {
+    "hex_id": "8308c0fffffffff",
+    "resolution": 3,
+    "center_lat": 66.46965946461606,
+    "center_lon": 23.789852222644097
+  },
+  {
+    "hex_id": "831135fffffffff",
+    "resolution": 3,
+    "center_lat": 59.667316002625505,
+    "center_lon": 26.687172461631626
+  },
+  {
+    "hex_id": "8308cefffffffff",
+    "resolution": 3,
+    "center_lat": 67.55961009064055,
+    "center_lon": 26.990976035765907
+  },
+  {
+    "hex_id": "8308d5fffffffff",
+    "resolution": 3,
+    "center_lat": 64.77186164561937,
+    "center_lon": 24.12555151471719
+  },
+  {
+    "hex_id": "8308dcfffffffff",
+    "resolution": 3,
+    "center_lat": 65.84736699433356,
+    "center_lon": 27.149401369135713
+  },
+  {
+    "hex_id": "8308e3fffffffff",
+    "resolution": 3,
+    "center_lat": 67.0003010281715,
+    "center_lon": 20.38238575868411
+  },
+  {
+    "hex_id": "8308eafffffffff",
+    "resolution": 3,
+    "center_lat": 68.09801968293556,
+    "center_lon": 23.125658490357353
+  },
+  {
+    "hex_id": "83088dfffffffff",
+    "resolution": 3,
+    "center_lat": 62.72623061760198,
+    "center_lon": 20.701864642274565
+  },
+  {
+    "hex_id": "8308f1fffffffff",
+    "resolution": 3,
+    "center_lat": 65.34216701471178,
+    "center_lon": 20.916868927489872
+  },
+  {
+    "hex_id": "83089bfffffffff",
+    "resolution": 3,
+    "center_lat": 59.57264379581431,
+    "center_lon": 24.934400718992052
+  },
+  {
+    "hex_id": "831125fffffffff",
+    "resolution": 3,
+    "center_lat": 62.25280910094445,
+    "center_lon": 25.501120794132564
+  },
+  {
+    "hex_id": "83112cfffffffff",
+    "resolution": 3,
+    "center_lat": 63.28916972309267,
+    "center_lon": 28.354829584962644
+  },
+  {
+    "hex_id": "8308c5fffffffff",
+    "resolution": 3,
+    "center_lat": 67.21335594259206,
+    "center_lon": 22.51314035658145
+  },
+  {
+    "hex_id": "8308ccfffffffff",
+    "resolution": 3,
+    "center_lat": 68.30586341292292,
+    "center_lon": 25.578980067858303
+  },
+  {
+    "hex_id": "830126fffffffff",
+    "resolution": 3,
+    "center_lat": 70.01618301908893,
+    "center_lon": 26.61939899505494
+  },
+  {
+    "hex_id": "8308d3fffffffff",
+    "resolution": 3,
+    "center_lat": 64.11386202458661,
+    "center_lon": 27.289626337467542
+  },
+  {
+    "hex_id": "8308dafffffffff",
+    "resolution": 3,
+    "center_lat": 65.1321610594859,
+    "center_lon": 30.43956759776867
+  },
+  {
+    "hex_id": "830134fffffffff",
+    "resolution": 3,
+    "center_lat": 69.45645483033276,
+    "center_lon": 31.453726442702873
+  },
+  {
+    "hex_id": "8308e1fffffffff",
+    "resolution": 3,
+    "center_lat": 67.58771830092392,
+    "center_lon": 18.45624717492765
+  },
+  {
+    "hex_id": "8308e8fffffffff",
+    "resolution": 3,
+    "center_lat": 68.70228532319625,
+    "center_lon": 21.00256306454129
+  },
+  {
+    "hex_id": "83088bfffffffff",
+    "resolution": 3,
+    "center_lat": 62.12008165335273,
+    "center_lon": 23.635593619297204
+  },
+  {
+    "hex_id": "831100fffffffff",
+    "resolution": 3,
+    "center_lat": 60.70601123630686,
+    "center_lon": 31.280796389834922
+  },
+  {
+    "hex_id": "831164fffffffff",
+    "resolution": 3,
+    "center_lat": 67.78423554987035,
+    "center_lon": 31.731689793435198
+  },
+  {
+    "hex_id": "8308f6fffffffff",
+    "resolution": 3,
+    "center_lat": 63.467621483114954,
+    "center_lon": 19.541149416246334
+  },
+  {
+    "hex_id": "830899fffffffff",
+    "resolution": 3,
+    "center_lat": 60.38805612295812,
+    "center_lon": 23.934828300958053
+  },
+  {
+    "hex_id": "831123fffffffff",
+    "resolution": 3,
+    "center_lat": 61.521286203543035,
+    "center_lon": 28.420522427107226
+  },
+  {
+    "hex_id": "83112afffffffff",
+    "resolution": 3,
+    "center_lat": 62.5028482518589,
+    "center_lon": 31.37474642083559
+  },
+  {
+    "hex_id": "831131fffffffff",
+    "resolution": 3,
+    "center_lat": 59.73953072456661,
+    "center_lon": 28.47957660828738
+  },
+  {
+    "hex_id": "8308c3fffffffff",
+    "resolution": 3,
+    "center_lat": 66.63443258697544,
+    "center_lon": 25.962313638925362
+  },
+  {
+    "hex_id": "8308cafffffffff",
+    "resolution": 3,
+    "center_lat": 67.68824785544402,
+    "center_lon": 29.330940319425014
+  },
+  {
+    "hex_id": "830124fffffffff",
+    "resolution": 3,
+    "center_lat": 69.80765710268949,
+    "center_lon": 23.904171932999752
+  },
+  {
+    "hex_id": "8308d1fffffffff",
+    "resolution": 3,
+    "center_lat": 64.91927210908578,
+    "center_lon": 26.175443738806845
+  },
+  {
+    "hex_id": "8308d8fffffffff",
+    "resolution": 3,
+    "center_lat": 65.96146770830033,
+    "center_lon": 29.346888647813678
+  },
+  {
+    "hex_id": "830882fffffffff",
+    "resolution": 3,
+    "center_lat": 59.46670267715353,
+    "center_lon": 19.25232907365805
+  },
+  {
+    "hex_id": "830889fffffffff",
+    "resolution": 3,
+    "center_lat": 62.90114312883104,
+    "center_lon": 22.536296924972262
+  },
+  {
+    "hex_id": "8308edfffffffff",
+    "resolution": 3,
+    "center_lat": 69.28121118762353,
+    "center_lon": 18.753016171461308
+  },
+  {
+    "hex_id": "8308f4fffffffff",
+    "resolution": 3,
+    "center_lat": 64.18906441347016,
+    "center_lon": 18.33644593193343
+  },
+  {
+    "hex_id": "831105fffffffff",
+    "resolution": 3,
+    "center_lat": 61.58457225312715,
+    "center_lon": 30.34808683470125
+  },
+  {
+    "hex_id": "831121fffffffff",
+    "resolution": 3,
+    "center_lat": 62.36195619720599,
+    "center_lon": 27.41461551034532
+  },
+  {
+    "hex_id": "831128fffffffff",
+    "resolution": 3,
+    "center_lat": 63.367089219352195,
+    "center_lon": 30.39122751830136
+  },
+  {
+    "hex_id": "8308c1fffffffff",
+    "resolution": 3,
+    "center_lat": 67.40055398102548,
+    "center_lon": 24.717010730053687
+  },
+  {
+    "hex_id": "8308c8fffffffff",
+    "resolution": 3,
+    "center_lat": 68.47887827286551,
+    "center_lon": 28.10445716608325
+  },
+  {
+    "hex_id": "830122fffffffff",
+    "resolution": 3,
+    "center_lat": 70.89152472067306,
+    "center_lon": 27.22255409917721
+  },
+  {
+    "hex_id": "8308d6fffffffff",
+    "resolution": 3,
+    "center_lat": 63.05444342586794,
+    "center_lon": 24.424612021859193
+  },
+  {
+    "hex_id": "8308ddfffffffff",
+    "resolution": 3,
+    "center_lat": 66.77084065895176,
+    "center_lon": 28.19848401131067
+  },
+  {
+    "hex_id": "830880fffffffff",
+    "resolution": 3,
+    "center_lat": 60.19121804861819,
+    "center_lon": 18.258530119185007
+  },
+  {
+    "hex_id": "8308ebfffffffff",
+    "resolution": 3,
+    "center_lat": 68.94563063180722,
+    "center_lon": 23.49634505879715
+  },
+  {
+    "hex_id": "83088efffffffff",
+    "resolution": 3,
+    "center_lat": 61.03084246326057,
+    "center_lon": 21.14969839100318
+  },
+  {
+    "hex_id": "8308f2fffffffff",
+    "resolution": 3,
+    "center_lat": 63.66292140612226,
+    "center_lon": 21.39310074611103
+  },
+  {
+    "hex_id": "83089cfffffffff",
+    "resolution": 3,
+    "center_lat": 59.47689254986654,
+    "center_lon": 21.236783092582957
+  },
+  {
+    "hex_id": "8308aafffffffff",
+    "resolution": 3,
+    "center_lat": 61.637707340445836,
+    "center_lon": 18.2506631681611
+  },
+  {
+    "hex_id": "831126fffffffff",
+    "resolution": 3,
+    "center_lat": 60.502540464608565,
+    "center_lon": 25.709341634494756
+  },
+  {
+    "hex_id": "83112dfffffffff",
+    "resolution": 3,
+    "center_lat": 64.21303455184646,
+    "center_lon": 29.360981159074864
+  },
+  {
+    "hex_id": "8308c6fffffffff",
+    "resolution": 3,
+    "center_lat": 65.53566773091246,
+    "center_lon": 22.931338866733313
+  },
+  {
+    "hex_id": "830120fffffffff",
+    "resolution": 3,
+    "center_lat": 70.6839332024754,
+    "center_lon": 24.354966985767334
+  },
+  {
+    "hex_id": "8308cdfffffffff",
+    "resolution": 3,
+    "center_lat": 69.15419163300248,
+    "center_lon": 26.074166089636293
+  },
+  {
+    "hex_id": "8308d4fffffffff",
+    "resolution": 3,
+    "center_lat": 63.83695619344009,
+    "center_lon": 23.30305123323885
+  },
+  {
+    "hex_id": "8308dbfffffffff",
+    "resolution": 3,
+    "center_lat": 66.04504599425933,
+    "center_lon": 31.597849372747127
+  },
+  {
+    "hex_id": "830135fffffffff",
+    "resolution": 3,
+    "center_lat": 70.1843566904799,
+    "center_lon": 29.41778444274005
+  },
+  {
+    "hex_id": "8308e2fffffffff",
+    "resolution": 3,
+    "center_lat": 66.06366797365551,
+    "center_lon": 19.64828416925775
+  },
+  {
+    "hex_id": "8308e9fffffffff",
+    "resolution": 3,
+    "center_lat": 69.56166918562909,
+    "center_lon": 21.28007051768186
+  },
+  {
+    "hex_id": "83088cfffffffff",
+    "resolution": 3,
+    "center_lat": 61.790587378266686,
+    "center_lon": 20.056021281501998
+  },
+  {
+    "hex_id": "8308f0fffffffff",
+    "resolution": 3,
+    "center_lat": 64.40482710225191,
+    "center_lon": 20.204288439853276
+  },
+  {
+    "hex_id": "831124fffffffff",
+    "resolution": 3,
+    "center_lat": 61.320340951947735,
+    "center_lon": 24.69270764183332
+  },
+  {
+    "hex_id": "8308c4fffffffff",
+    "resolution": 3,
+    "center_lat": 66.27868541164894,
+    "center_lon": 21.684386986187697
+  },
+  {
+    "hex_id": "8308cbfffffffff",
+    "resolution": 3,
+    "center_lat": 68.59801308131468,
+    "center_lon": 30.5561206252907
+  },
+  {
+    "hex_id": "830125fffffffff",
+    "resolution": 3,
+    "center_lat": 70.43589029063983,
+    "center_lon": 21.586442753749814
+  },
+  {
+    "hex_id": "8308d2fffffffff",
+    "resolution": 3,
+    "center_lat": 63.1843729188795,
+    "center_lon": 26.364939748309254
+  },
+  {
+    "hex_id": "8308d9fffffffff",
+    "resolution": 3,
+    "center_lat": 66.87674350445461,
+    "center_lon": 30.49410722647053
+  },
+  {
+    "hex_id": "8308e0fffffffff",
+    "resolution": 3,
+    "center_lat": 66.76365119636006,
+    "center_lon": 18.326764223487586
+  },
+  {
+    "hex_id": "830883fffffffff",
+    "resolution": 3,
+    "center_lat": 60.21673266885697,
+    "center_lon": 20.26881542392714
+  },
+  {
+    "hex_id": "83094bfffffffff",
+    "resolution": 3,
+    "center_lat": 70.15067436534436,
+    "center_lon": 18.92416445186705
+  },
+  {
+    "hex_id": "83088afffffffff",
+    "resolution": 3,
+    "center_lat": 61.18586268082139,
+    "center_lon": 22.897211102032337
+  },
+  {
+    "hex_id": "8308eefffffffff",
+    "resolution": 3,
+    "center_lat": 67.85780054251815,
+    "center_lon": 20.75003604676013
+  },
+  {
+    "hex_id": "8308f5fffffffff",
+    "resolution": 3,
+    "center_lat": 65.12628463578714,
+    "center_lon": 18.968160966392773
+  },
+  {
+    "hex_id": "831106fffffffff",
+    "resolution": 3,
+    "center_lat": 59.78784878020001,
+    "center_lon": 30.309349539567798
+  },
+  {
+    "hex_id": "830898fffffffff",
+    "resolution": 3,
+    "center_lat": 59.45696665405675,
+    "center_lon": 23.22313007354856
+  },
+  {
+    "hex_id": "831122fffffffff",
+    "resolution": 3,
+    "center_lat": 60.59470279045016,
+    "center_lon": 27.526723033384147
+  },
+  {
+    "hex_id": "831129fffffffff",
+    "resolution": 3,
+    "center_lat": 64.28358999216177,
+    "center_lon": 31.479741269420757
+  },
+  {
+    "hex_id": "8308c2fffffffff",
+    "resolution": 3,
+    "center_lat": 65.70475199483454,
+    "center_lon": 25.009727400799726
+  },
+  {
+    "hex_id": "8308c9fffffffff",
+    "resolution": 3,
+    "center_lat": 69.32530764641402,
+    "center_lon": 28.72940779089445
+  },
+  {
+    "hex_id": "8308d0fffffffff",
+    "resolution": 3,
+    "center_lat": 63.98788732310875,
+    "center_lon": 25.26932740568998
+  },
+  {
+    "hex_id": "8308defffffffff",
+    "resolution": 3,
+    "center_lat": 65.04001473201538,
+    "center_lon": 28.28131217671622
+  },
+  {
+    "hex_id": "830881fffffffff",
+    "resolution": 3,
+    "center_lat": 60.937068692846836,
+    "center_lon": 19.273621708203994
+  },
+  {
+    "hex_id": "830888fffffffff",
+    "resolution": 3,
+    "center_lat": 61.9654520992716,
+    "center_lon": 21.820055699630714
+  },
+  {
+    "hex_id": "8308ecfffffffff",
+    "resolution": 3,
+    "center_lat": 68.42689380216362,
+    "center_lon": 18.59774705916367
+  },
+  {
+    "hex_id": "8308f3fffffffff",
+    "resolution": 3,
+    "center_lat": 64.5997319910168,
+    "center_lon": 22.134465299147653
+  },
+  {
+    "hex_id": "831104fffffffff",
+    "resolution": 3,
+    "center_lat": 60.66302491181337,
+    "center_lon": 29.38475937314669
+  },
+  {
+    "hex_id": "83089dfffffffff",
+    "resolution": 3,
+    "center_lat": 60.25277399921723,
+    "center_lon": 22.204964884122795
+  },
+  {
+    "hex_id": "8308abfffffffff",
+    "resolution": 3,
+    "center_lat": 62.531443011312014,
+    "center_lon": 18.922639289357406
+  },
+  {
+    "hex_id": "831120fffffffff",
+    "resolution": 3,
+    "center_lat": 61.43268145278824,
+    "center_lon": 26.53452280583413
+  }
+]

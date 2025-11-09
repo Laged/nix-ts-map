@@ -1,0 +1,20 @@
+[
+  {
+    "hex_id": "8009fffffffffff",
+    "resolution": 0,
+    "center_lat": 64.70000012793487,
+    "center_lon": 10.53619907546767
+  },
+  {
+    "hex_id": "8001fffffffffff",
+    "resolution": 0,
+    "center_lat": 79.24239850975904,
+    "center_lon": 38.02340700796988
+  },
+  {
+    "hex_id": "8011fffffffffff",
+    "resolution": 0,
+    "center_lat": 60.18522012988564,
+    "center_lon": 45.306527529100904
+  }
+]
