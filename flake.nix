@@ -59,8 +59,6 @@
             environment = {
               PC_DISABLE_TUI = false;
             };
-            # Use a different port if 8080 is in use
-            port = 8081;
           };
 
           # Custom settings for all processes
@@ -112,7 +110,7 @@
 
               # Install dependencies first
               install-deps = {
-                command = "${pkgs.bun}/bin/bun install 2>&1 | tee ./logs/install-deps.log";
+                command = "${pkgs.bun}/bin/bun install";
                 depends_on = {
                   "nix-ts-map-db".condition = "process_healthy";
                 };
@@ -127,8 +125,6 @@
                   let
                     setupScript = pkgs.writeShellScript "setup-database" ''
                       set -e
-                      exec > >(tee -a ./logs/setup-database.log)
-                      exec 2>&1
                       
                       echo "========================================="
                       echo "nix-ts-map Database Setup"
@@ -142,9 +138,18 @@
 
                           # Apply migrations
                           echo "→ Applying migrations..."
-                          ${pkgs.clickhouse}/bin/clickhouse-client --multiquery < ${./db/migrations/001_initial_schema.sql} 2>&1 | tee -a ./logs/migration-001.log
-                          ${pkgs.clickhouse}/bin/clickhouse-client --multiquery < ${./db/migrations/002_h3_enrichment.sql} 2>&1 | tee -a ./logs/migration-002.log
-                          ${pkgs.clickhouse}/bin/clickhouse-client --multiquery < ${./db/migrations/003_materialized_views.sql} 2>&1 | tee -a ./logs/migration-003.log
+                          ${pkgs.clickhouse}/bin/clickhouse-client --multiquery < ${./db/migrations/001_initial_schema.sql} > ./logs/migration-001.log 2>&1 || {
+                            echo "✗ Migration 001 failed. Check ./logs/migration-001.log"
+                            exit 1
+                          }
+                          ${pkgs.clickhouse}/bin/clickhouse-client --multiquery < ${./db/migrations/002_h3_enrichment.sql} > ./logs/migration-002.log 2>&1 || {
+                            echo "✗ Migration 002 failed. Check ./logs/migration-002.log"
+                            exit 1
+                          }
+                          ${pkgs.clickhouse}/bin/clickhouse-client --multiquery < ${./db/migrations/003_materialized_views.sql} > ./logs/migration-003.log 2>&1 || {
+                            echo "✗ Migration 003 failed. Check ./logs/migration-003.log"
+                            exit 1
+                          }
                           echo "✓ Migrations applied"
                           echo ""
 
