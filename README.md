@@ -8,7 +8,7 @@ A real-time flight tracking and visualization platform built with Nix, TypeScrip
 
 The application displays:
 - **Interactive Map**: GPU-accelerated visualization using Deck.gl and MapLibre, centered on Finland
-- **H3 Hexagon Heatmap**: Blue gradient showing flight density across different hexagon resolutions
+- **H3 Hexagon Heatmap**: Blue gradient showing flight density across different hexagon resolutions (r0-r7 available by default; r8-r10 can be generated if needed)
 - **Flight Positions**: White circles representing the latest known positions of individual aircraft
 - **Real-time Statistics**: Flights count, trails (total events), and hexagons with data
 - **Resolution Slider**: Adjustable H3 resolution (r0-r10) for different levels of detail
