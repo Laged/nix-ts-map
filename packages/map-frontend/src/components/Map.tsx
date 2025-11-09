@@ -203,11 +203,16 @@ export function FlightMap() {
         ) : stats ? (
           <div>
             <div style={{ marginBottom: '4px' }}>
-              <strong>Flights:</strong> {stats.uniqueFlights}
+              <strong>Flights:</strong> {stats.uniqueFlights.toLocaleString()}
             </div>
             <div>
-              <strong>Trails:</strong> {stats.totalEvents}
+              <strong>Trails:</strong> {stats.totalEvents.toLocaleString()}
             </div>
+            {hexGridDataFiltered.length > 0 && (
+              <div style={{ marginTop: '4px', fontSize: '12px', opacity: 0.7 }}>
+                Hexagons: {hexGridDataFiltered.length}
+              </div>
+            )}
           </div>
         ) : (
           <div>No stats available</div>
