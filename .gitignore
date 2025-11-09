@@ -73,3 +73,9 @@ examples/
 # Documentation images (keep the directory, ignore placeholder files)
 docs/images/*.png
 !docs/images/.gitkeep
+
+# Large hex polyfill files (exceed GitHub's 100MB limit)
+# These can be generated at runtime if needed
+packages/map-frontend/public/hex_polyfill_r8.json
+packages/map-frontend/public/hex_polyfill_r9.json
+packages/map-frontend/public/hex_polyfill_r10.json
