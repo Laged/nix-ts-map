@@ -89,11 +89,8 @@
             processes = {
               # ClickHouse database service
               "nix-ts-map-db" = {
-                command = "${pkgs.clickhouse}/bin/clickhouse-server";
+                command = "${pkgs.clickhouse}/bin/clickhouse-server 2>&1 | tee ./logs/clickhouse.log";
                 availability.restart = "always";
-                # Log to file
-                stdout = "./logs/clickhouse-stdout.log";
-                stderr = "./logs/clickhouse-stderr.log";
                 readiness_probe = {
                   exec = {
                     command = "${pkgs.clickhouse}/bin/clickhouse-client --query 'SELECT 1'";
@@ -108,13 +105,11 @@
 
               # Install dependencies first
               install-deps = {
-                command = "${pkgs.bun}/bin/bun install";
+                command = "${pkgs.bun}/bin/bun install 2>&1 | tee ./logs/install-deps.log";
                 depends_on = {
                   "nix-ts-map-db".condition = "process_healthy";
                 };
                 availability.restart = "no";
-                stdout = "./logs/install-deps-stdout.log";
-                stderr = "./logs/install-deps-stderr.log";
               };
 
               # Apply database migrations after ClickHouse is ready
@@ -167,32 +162,26 @@
                   "nix-ts-map-db".condition = "process_healthy";
                 };
                 availability.restart = "no";
-                stdout = "./logs/setup-database-stdout.log";
-                stderr = "./logs/setup-database-stderr.log";
               };
 
               # Scraper service
               scraper = {
-                command = "${pkgs.bun}/bin/bun run packages/map-scraper/src/index.ts";
+                command = "${pkgs.bun}/bin/bun run packages/map-scraper/src/index.ts 2>&1 | tee ./logs/scraper.log";
                 depends_on = {
                   "nix-ts-map-db".condition = "process_healthy";
                   "install-deps".condition = "process_completed_successfully";
                   "setup-database".condition = "process_completed_successfully";
                 };
-                stdout = "./logs/scraper-stdout.log";
-                stderr = "./logs/scraper-stderr.log";
               };
 
               # GraphQL server
               graphql = {
-                command = "${pkgs.bun}/bin/bun run packages/map-graphql/src/index.ts";
+                command = "${pkgs.bun}/bin/bun run packages/map-graphql/src/index.ts 2>&1 | tee ./logs/graphql.log";
                 depends_on = {
                   "nix-ts-map-db".condition = "process_healthy";
                   "install-deps".condition = "process_completed_successfully";
                   "setup-database".condition = "process_completed_successfully";
                 };
-                stdout = "./logs/graphql-stdout.log";
-                stderr = "./logs/graphql-stderr.log";
                 readiness_probe = {
                   http_get = {
                     host = "localhost";
@@ -207,13 +196,11 @@
 
               # Frontend
               frontend = {
-                command = "${pkgs.bun}/bin/bun run --cwd packages/map-frontend dev";
+                command = "${pkgs.bun}/bin/bun run --cwd packages/map-frontend dev 2>&1 | tee ./logs/frontend.log";
                 depends_on = {
                   "graphql".condition = "process_healthy";
                   "install-deps".condition = "process_completed_successfully";
                 };
-                stdout = "./logs/frontend-stdout.log";
-                stderr = "./logs/frontend-stderr.log";
                 readiness_probe = {
                   http_get = {
                     host = "localhost";
