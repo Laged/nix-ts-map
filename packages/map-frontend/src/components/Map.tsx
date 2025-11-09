@@ -57,7 +57,6 @@ export function FlightMap() {
         return res.json();
       })
       .then((data: Array<{ hex_id: string; resolution: number; center_lat: number; center_lon: number }>) => {
-        console.log('[FlightMap] Loaded hex polyfill data:', data.length, 'hexes');
         setBaseHexGrid(
           data.map((hex) => ({
             h3Index: hex.hex_id,
@@ -65,8 +64,7 @@ export function FlightMap() {
           }))
         );
       })
-      .catch((err) => {
-        console.error(`[FlightMap] Failed to load hex polyfill cache for resolution ${resolution}:`, err);
+      .catch(() => {
         // Set empty array on error to prevent rendering issues
         setBaseHexGrid([]);
       });
@@ -104,24 +102,6 @@ export function FlightMap() {
     errorPolicy: 'all',
   });
 
-  // Debug logging for query results (using useEffect instead of deprecated callbacks)
-  useEffect(() => {
-    if (positionsData) {
-      console.log('[FlightMap] Latest positions query completed:', positionsData?.latestAircraftPositions?.length || 0, 'positions');
-    }
-    if (positionsError) {
-      console.error('[FlightMap] Latest positions query error:', positionsError);
-    }
-  }, [positionsData, positionsError]);
-
-  useEffect(() => {
-    if (hexGridData) {
-      console.log('[FlightMap] Hex grid query completed:', hexGridData?.hexGrid?.length || 0, 'hexes');
-    }
-    if (hexGridError) {
-      console.error('[FlightMap] Hex grid query error:', hexGridError);
-    }
-  }, [hexGridData, hexGridError]);
 
   // Fetch flight statistics
   const { data: statsData, loading: statsLoading } = useQuery(GET_FLIGHT_STATS, {
@@ -136,18 +116,6 @@ export function FlightMap() {
     (d: { h3Index: string; aircraftCount: number }) => d.h3Index && d.h3Index !== 'test' && d.h3Index.length > 0
   );
 
-  // Debug logging
-  useEffect(() => {
-    console.log('[FlightMap] Resolution:', resolution);
-    console.log('[FlightMap] Base hex grid count:', baseHexGrid.length);
-    console.log('[FlightMap] Hex grid data filtered count:', hexGridDataFiltered.length);
-    console.log('[FlightMap] Latest positions count:', positionsData?.latestAircraftPositions?.length || 0);
-    if (hexGridDataFiltered.length > 0) {
-      const maxCount = Math.max(...hexGridDataFiltered.map((d: { h3Index: string; aircraftCount: number }) => d.aircraftCount));
-      const minCount = Math.min(...hexGridDataFiltered.map((d: { h3Index: string; aircraftCount: number }) => d.aircraftCount));
-      console.log('[FlightMap] Aircraft count range:', { min: minCount, max: maxCount });
-    }
-  }, [resolution, baseHexGrid.length, hexGridDataFiltered.length, positionsData?.latestAircraftPositions?.length]);
 
   // Create a map of h3Index to aircraftCount for quick lookup
   const dataMap = useMemo(() => {
@@ -155,7 +123,6 @@ export function FlightMap() {
     hexGridDataFiltered.forEach((d: { h3Index: string; aircraftCount: number }) => {
       map.set(d.h3Index, d.aircraftCount);
     });
-    console.log('[FlightMap] Data map size:', map.size);
     return map;
   }, [hexGridDataFiltered]);
 
@@ -163,18 +130,15 @@ export function FlightMap() {
   const maxAircraftCount = useMemo(() => {
     if (hexGridDataFiltered.length === 0) return 1;
     const max = Math.max(...hexGridDataFiltered.map((d: { h3Index: string; aircraftCount: number }) => d.aircraftCount));
-    console.log('[FlightMap] Max aircraft count for heatmap:', max);
     return max || 1;
   }, [hexGridDataFiltered]);
 
   // Merge base hex grid with data
   const mergedHexGrid = useMemo(() => {
-    const merged = baseHexGrid.map((hex: { h3Index: string; aircraftCount: number }) => ({
+    return baseHexGrid.map((hex: { h3Index: string; aircraftCount: number }) => ({
       ...hex,
       aircraftCount: dataMap.get(hex.h3Index) || 0,
     }));
-    console.log('[FlightMap] Merged hex grid count:', merged.length);
-    return merged;
   }, [baseHexGrid, dataMap]);
 
   const layers = [
