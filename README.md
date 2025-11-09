@@ -72,7 +72,15 @@ The frontend will be available at `http://localhost:5173`
    # Edit .env and fill in your values (see OpenSky API section below)
    ```
 
-5. **Run the application:**
+5. **Generate hex polyfill files (optional):**
+   ```bash
+   # Generate missing hex polyfill files (r0-r7 are included, r8-r10 are large and excluded)
+   nix run .#gen-hexes
+   ```
+   
+   **Note:** Hex polyfill files for resolutions r0-r7 are included in the repository. Higher resolution files (r8-r10) exceed GitHub's 100MB limit and are excluded. They can be generated locally if needed for higher resolution visualization. The script will skip files that already exist.
+
+6. **Run the application:**
    ```bash
    nix run
    ```
@@ -371,8 +379,9 @@ nix-ts-map/
 │   └── wipe-db.sql             # Database wipe script (drops all tables/views)
 ├── plans/                 # Sprint planning documents
 ├── scripts/
-│   ├── apply-migrations.sh    # Apply database migrations
-│   └── reset-database.sh      # Wipe all data and reset database
+│   ├── apply-migrations.sh         # Apply database migrations
+│   ├── reset-database.sh            # Wipe all data and reset database
+│   └── generate-hex-polyfill.ts    # Generate hex polyfill files for Finland
 └── process-compose.yml    # Service orchestration config
 ```
 
