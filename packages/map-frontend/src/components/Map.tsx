@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client';
 import { DeckGL } from '@deck.gl/react';
 import { H3HexagonLayer } from '@deck.gl/geo-layers';
 import { ScatterplotLayer } from '@deck.gl/layers';
-import { Map } from 'react-map-gl/maplibre';
+import { Map as MapLibreMap } from 'react-map-gl/maplibre';
 import { GET_LATEST_POSITIONS, GET_HEX_GRID, GET_FLIGHT_STATS } from '../graphql/queries';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useState, useMemo, useEffect } from 'react';
@@ -188,7 +188,7 @@ export function FlightMap() {
         controller={true}
         layers={layers}
       >
-        <Map
+        <MapLibreMap
           mapStyle="https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
           reuseMaps
         />
