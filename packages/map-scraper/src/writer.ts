@@ -29,11 +29,25 @@ export async function insertFlightEvents(
   }
   
   try {
+    // Format timestamp as 'YYYY-MM-DD HH:MM:SS' string for ClickHouse DateTime
+    // ClickHouse DateTime can parse this format from JSONEachRow
+    const formatTimestamp = (unixSeconds: number): string => {
+      const date = new Date(unixSeconds * 1000);
+      const year = date.getUTCFullYear();
+      const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+      const day = String(date.getUTCDate()).padStart(2, '0');
+      const hours = String(date.getUTCHours()).padStart(2, '0');
+      const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+      const seconds = String(date.getUTCSeconds()).padStart(2, '0');
+      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    };
+
     await client.insert({
       table: 'flight_events',
       values: events.map((event) => ({
         icao24: event.icao24,
-        timestamp: new Date(event.timestamp * 1000), // Convert Unix timestamp to Date
+        // ClickHouse DateTime expects format 'YYYY-MM-DD HH:MM:SS' when using JSONEachRow
+        timestamp: formatTimestamp(event.timestamp),
         latitude: event.latitude,
         longitude: event.longitude,
         altitude: event.altitude,
