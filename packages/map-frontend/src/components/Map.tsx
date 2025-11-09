@@ -1,27 +1,60 @@
 import { useQuery } from '@apollo/client';
 import { DeckGL } from '@deck.gl/react';
-import { H3HexagonLayer, ScatterplotLayer } from '@deck.gl/geo-layers';
-import { Map } from 'react-map-gl';
+import { H3HexagonLayer } from '@deck.gl/geo-layers';
+import { ScatterplotLayer } from '@deck.gl/layers';
+import { Map } from 'react-map-gl/maplibre';
 import { GET_LATEST_POSITIONS, GET_HEX_GRID } from '../graphql/queries';
-import 'mapbox-gl/dist/mapbox-gl.css';
+import 'maplibre-gl/dist/maplibre-gl.css';
 import { useState } from 'react';
 
+// MapLibre doesn't require a token, but we can optionally use Mapbox styles if token is provided
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN || '';
 
-// Default view centered on Finland
-const INITIAL_VIEW_STATE = {
-  longitude: 25.0,
-  latitude: 64.0,
-  zoom: 5,
-  pitch: 0,
-  bearing: 0,
+// Finland bounds from shared constants
+const FINLAND_BOUNDS = {
+  minLat: 59.5,
+  maxLat: 70.1,
+  minLon: 19.0,
+  maxLon: 31.5,
 };
+
+// Calculate center and zoom to show all of Finland
+const calculateFinlandViewState = () => {
+  const centerLon = (FINLAND_BOUNDS.minLon + FINLAND_BOUNDS.maxLon) / 2;
+  const centerLat = (FINLAND_BOUNDS.minLat + FINLAND_BOUNDS.maxLat) / 2;
+  
+  // Calculate zoom level to fit Finland bounds
+  // Approximate calculation: zoom level based on bounding box size
+  const latDiff = FINLAND_BOUNDS.maxLat - FINLAND_BOUNDS.minLat;
+  const lonDiff = FINLAND_BOUNDS.maxLon - FINLAND_BOUNDS.minLon;
+  const maxDiff = Math.max(latDiff, lonDiff);
+  
+  // Rough zoom calculation: smaller area = higher zoom
+  // Finland spans about 10.6 degrees lat and 12.5 degrees lon
+  // For a good fit, we want zoom around 5-6
+  const zoom = Math.max(4, Math.min(7, 8 - Math.log2(maxDiff)));
+  
+  return {
+    longitude: centerLon,
+    latitude: centerLat,
+    zoom: zoom,
+    pitch: 0,
+    bearing: 0,
+  };
+};
+
+const INITIAL_VIEW_STATE = calculateFinlandViewState();
 
 export function FlightMap() {
   const [viewState, setViewState] = useState(INITIAL_VIEW_STATE);
 
-  // Calculate bounding box for Finland (approximately)
-  const bbox: [number, number, number, number] = [60, 20, 70, 30];
+  // Calculate bounding box for Finland
+  const bbox: [number, number, number, number] = [
+    FINLAND_BOUNDS.minLat,
+    FINLAND_BOUNDS.minLon,
+    FINLAND_BOUNDS.maxLat,
+    FINLAND_BOUNDS.maxLon,
+  ];
   const now = Math.floor(Date.now() / 1000);
   const oneHourAgo = now - 3600;
 
@@ -118,8 +151,7 @@ export function FlightMap() {
         layers={layers}
       >
         <Map
-          mapboxAccessToken={MAPBOX_TOKEN}
-          mapStyle="mapbox://styles/mapbox/dark-v11"
+          mapStyle="https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
           reuseMaps
         />
       </DeckGL>
