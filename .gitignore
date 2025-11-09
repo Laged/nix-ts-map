@@ -46,7 +46,11 @@ coverage/
 *.tmp
 *.temp
 
-# ClickHouse data directories (created at runtime)
+# ClickHouse data directory (created at runtime)
+# All ClickHouse runtime data is stored in db/clickhouse-data/
+db/clickhouse-data/
+
+# Legacy ClickHouse directories (if they exist from before the change)
 data/
 metadata/
 metadata_dropped/
