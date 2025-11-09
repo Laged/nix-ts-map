@@ -136,8 +136,8 @@ export function FlightMap() {
     console.log('[FlightMap] Hex grid data filtered count:', hexGridDataFiltered.length);
     console.log('[FlightMap] Latest positions count:', positionsData?.latestAircraftPositions?.length || 0);
     if (hexGridDataFiltered.length > 0) {
-      const maxCount = Math.max(...hexGridDataFiltered.map(d => d.aircraftCount));
-      const minCount = Math.min(...hexGridDataFiltered.map(d => d.aircraftCount));
+      const maxCount = Math.max(...hexGridDataFiltered.map((d: { h3Index: string; aircraftCount: number }) => d.aircraftCount));
+      const minCount = Math.min(...hexGridDataFiltered.map((d: { h3Index: string; aircraftCount: number }) => d.aircraftCount));
       console.log('[FlightMap] Aircraft count range:', { min: minCount, max: maxCount });
     }
   }, [resolution, baseHexGrid.length, hexGridDataFiltered.length, positionsData?.latestAircraftPositions?.length]);
@@ -155,7 +155,7 @@ export function FlightMap() {
   // Calculate max aircraft count for heatmap normalization
   const maxAircraftCount = useMemo(() => {
     if (hexGridDataFiltered.length === 0) return 1;
-    const max = Math.max(...hexGridDataFiltered.map(d => d.aircraftCount));
+    const max = Math.max(...hexGridDataFiltered.map((d: { h3Index: string; aircraftCount: number }) => d.aircraftCount));
     console.log('[FlightMap] Max aircraft count for heatmap:', max);
     return max || 1;
   }, [hexGridDataFiltered]);
