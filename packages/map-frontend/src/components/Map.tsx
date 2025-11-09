@@ -5,7 +5,7 @@ import { ScatterplotLayer } from '@deck.gl/layers';
 import { Map } from 'react-map-gl/maplibre';
 import { GET_LATEST_POSITIONS, GET_HEX_GRID, GET_FLIGHT_STATS } from '../graphql/queries';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import { useState } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 
 // Finland bounds from shared constants
 const FINLAND_BOUNDS = {
@@ -90,29 +90,52 @@ export function FlightMap() {
     (d: { h3Index: string; aircraftCount: number }) => d.h3Index && d.h3Index !== 'test' && d.h3Index.length > 0
   );
 
+  // Create a map of h3Index to aircraftCount for quick lookup
+  const dataMap = useMemo(() => {
+    const map = new Map<string, number>();
+    hexGridDataFiltered.forEach((d) => {
+      map.set(d.h3Index, d.aircraftCount);
+    });
+    return map;
+  }, [hexGridDataFiltered]);
+
+  // Merge base hex grid with data
+  const mergedHexGrid = useMemo(() => {
+    return baseHexGrid.map((hex) => ({
+      ...hex,
+      aircraftCount: dataMap.get(hex.h3Index) || 0,
+    }));
+  }, [baseHexGrid, dataMap]);
+
   const layers = [
-    // H3 Hexagon Layer
+    // Base H3 Hexagon Layer (gray, almost transparent) - shows all hexes even without data
     new H3HexagonLayer({
-      id: 'h3-hexagon-layer',
-      data: hexGridDataFiltered,
+      id: 'h3-hexagon-base-layer',
+      data: mergedHexGrid,
       getHexagon: (d) => d.h3Index,
       getFillColor: (d) => {
         const count = d.aircraftCount || 0;
-        // Color based on density: blue (low) to red (high)
-        const intensity = Math.min(count / 10, 1);
-        return [
-          Math.floor(intensity * 255),
-          Math.floor((1 - intensity) * 255),
-          128,
-          Math.floor(intensity * 128 + 127),
-        ];
+        if (count > 0) {
+          // Color based on density: blue (low) to red (high)
+          const intensity = Math.min(count / 10, 1);
+          return [
+            Math.floor(intensity * 255),
+            Math.floor((1 - intensity) * 255),
+            128,
+            Math.floor(intensity * 128 + 127),
+          ];
+        } else {
+          // Gray, almost transparent for hexes without data
+          return [128, 128, 128, 20];
+        }
       },
       getElevation: (d) => (d.aircraftCount || 0) * 100,
       elevationScale: 1,
       extruded: true,
       pickable: true,
       coverage: 1,
-      opacity: 0.6,
+      opacity: 0.3,
+      wireframe: false,
     }),
 
     // Scatterplot Layer for individual aircraft
@@ -187,7 +210,7 @@ export function FlightMap() {
       <div
         style={{
           position: 'absolute',
-          bottom: 10,
+          top: 10,
           left: 10,
           background: 'rgba(0,0,0,0.8)',
           color: 'white',
