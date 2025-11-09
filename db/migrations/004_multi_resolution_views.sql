@@ -154,9 +154,24 @@ FROM flight_events
 WHERE h3_res7 != '' AND h3_res7 != 'test'
 GROUP BY h3_res7, minute;
 
--- Resolution 8 (rename existing table/view to match pattern)
--- Note: The existing flights_per_hex_per_minute uses h3_res8, so we'll keep it
--- but we can also create r8-specific views if needed
+-- Resolution 8
+CREATE TABLE IF NOT EXISTS flights_per_hex_per_minute_r8 (
+    h3_res8 String,
+    minute DateTime,
+    aircraft_count AggregateFunction(uniq, String)
+) ENGINE = AggregatingMergeTree()
+ORDER BY (h3_res8, minute);
+
+CREATE MATERIALIZED VIEW IF NOT EXISTS flights_per_hex_per_minute_r8_mv 
+TO flights_per_hex_per_minute_r8 
+AS
+SELECT
+    h3_res8,
+    toStartOfMinute(timestamp) AS minute,
+    uniqState(icao24) as aircraft_count
+FROM flight_events
+WHERE h3_res8 != '' AND h3_res8 != 'test'
+GROUP BY h3_res8, minute;
 
 -- Resolution 9
 CREATE TABLE IF NOT EXISTS flights_per_hex_per_minute_r9 (
