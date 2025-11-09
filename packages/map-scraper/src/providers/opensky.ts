@@ -1,5 +1,6 @@
-import type { FlightEvent, DataSource } from '@map/shared';
+import type { FlightEventWithH3, DataSource } from '@map/shared';
 import type { BoundingBox } from '../config';
+import * as h3 from 'h3-js';
 
 /**
  * OpenSky Network API response structure
@@ -38,14 +39,25 @@ interface OpenSkyResponse {
  * @param bbox Bounding box [minLat, minLon, maxLat, maxLon]
  * @returns Array of FlightEventWithH3 objects (enriched with H3 indexes)
  */
-export async function fetchOpenSkyData(bbox: BoundingBox): Promise<FlightEventWithH3[]> {
+export async function fetchOpenSkyData(
+  bbox: BoundingBox,
+  credentials?: { username?: string; password?: string }
+): Promise<FlightEventWithH3[]> {
   const [minLat, minLon, maxLat, maxLon] = bbox;
   
   // OpenSky API expects: lamin, lomin, lamax, lomax
-  const url = `https://opensky-network.org/api/states/all?lamin=${minLat}&lomin=${minLon}&lamax=${maxLat}&lomax=${maxLon}`;
+  let url = `https://opensky-network.org/api/states/all?lamin=${minLat}&lomin=${minLon}&lamax=${maxLat}&lomax=${maxLon}`;
+  
+  // Add authentication if credentials are provided
+  const headers: HeadersInit = {};
+  if (credentials?.username && credentials?.password) {
+    // OpenSky uses HTTP Basic Auth
+    const auth = btoa(`${credentials.username}:${credentials.password}`);
+    headers['Authorization'] = `Basic ${auth}`;
+  }
   
   try {
-    const response = await fetch(url);
+    const response = await fetch(url, { headers });
     
     if (!response.ok) {
       throw new Error(`OpenSky API error: ${response.status} ${response.statusText}`);

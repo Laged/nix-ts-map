@@ -13,7 +13,7 @@ async function scrape(): Promise<void> {
   try {
     // Fetch data from OpenSky
     console.log('Fetching data from OpenSky Network...');
-    const openSkyEvents = await fetchOpenSkyData(config.boundingBox);
+    const openSkyEvents = await fetchOpenSkyData(config.boundingBox, config.opensky);
     console.log(`Fetched ${openSkyEvents.length} events from OpenSky`);
     
     // Combine all events (in the future, we'll fetch from multiple providers)
