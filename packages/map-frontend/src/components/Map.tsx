@@ -83,6 +83,8 @@ export function FlightMap() {
     errorPolicy: 'all',
   });
 
+  const stats = statsData?.flightStats;
+
   const layers = [
     // H3 Hexagon Layer
     new H3HexagonLayer({
@@ -174,6 +176,36 @@ export function FlightMap() {
           <strong>Error:</strong> {positionsError?.message || hexGridError?.message}
         </div>
       )}
+      {/* Flight Statistics */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: 10,
+          left: 10,
+          background: 'rgba(0,0,0,0.8)',
+          color: 'white',
+          padding: '12px 16px',
+          borderRadius: '8px',
+          fontFamily: 'monospace',
+          fontSize: '14px',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+        }}
+      >
+        {statsLoading ? (
+          <div>Loading stats...</div>
+        ) : stats ? (
+          <div>
+            <div style={{ marginBottom: '4px' }}>
+              <strong>Flights:</strong> {stats.uniqueFlights}
+            </div>
+            <div>
+              <strong>Trails:</strong> {stats.totalEvents}
+            </div>
+          </div>
+        ) : (
+          <div>No stats available</div>
+        )}
+      </div>
     </div>
   );
 }
