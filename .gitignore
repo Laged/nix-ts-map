@@ -70,8 +70,9 @@ status
 # Examples (not needed in production)
 examples/
 
-# Documentation images (keep the directory, ignore placeholder files)
+# Documentation images (keep the directory, allow screenshot.png)
 docs/images/*.png
+!docs/images/screenshot.png
 !docs/images/.gitkeep
 
 # Large hex polyfill files (exceed GitHub's 100MB limit)
