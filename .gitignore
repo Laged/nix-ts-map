@@ -45,3 +45,23 @@ coverage/
 # Temporary files
 *.tmp
 *.temp
+
+# ClickHouse data directories (created at runtime)
+data/
+metadata/
+metadata_dropped/
+store/
+tmp/
+flags/
+format_schemas/
+dictionaries_lib/
+named_collections/
+preprocessed_configs/
+user_defined/
+user_files/
+user_scripts/
+uuid
+status
+
+# Examples (not needed in production)
+examples/
