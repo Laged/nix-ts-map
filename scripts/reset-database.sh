@@ -79,16 +79,33 @@ echo "✓ Tables dropped"
 echo ""
 
 echo "→ Clearing ClickHouse data directory..."
-# Remove ClickHouse data directory (will be recreated on next start)
+# Remove ClickHouse data directory contents but keep the directory structure
+# ClickHouse needs the base directory to exist
 if [ -d "db/clickhouse-data" ]; then
-    rm -rf db/clickhouse-data/*
+    # Remove all contents but keep the directory
+    find db/clickhouse-data -mindepth 1 -delete 2>/dev/null || true
     echo "✓ Data directory cleared"
 else
-    echo "⚠ Data directory not found (may not exist yet)"
+    # Create the directory if it doesn't exist
+    mkdir -p db/clickhouse-data
+    echo "✓ Created data directory"
 fi
 echo ""
 
 echo "→ Re-applying migrations..."
+# Ensure ClickHouse data directory structure exists
+mkdir -p db/clickhouse-data/store
+mkdir -p db/clickhouse-data/data
+mkdir -p db/clickhouse-data/tmp
+mkdir -p db/clickhouse-data/flags
+mkdir -p db/clickhouse-data/format_schemas
+mkdir -p db/clickhouse-data/dictionaries_lib
+mkdir -p db/clickhouse-data/named_collections
+mkdir -p db/clickhouse-data/preprocessed_configs
+mkdir -p db/clickhouse-data/user_defined
+mkdir -p db/clickhouse-data/user_files
+mkdir -p db/clickhouse-data/user_scripts
+
 # Re-apply all migrations
 for migration in db/migrations/*.sql; do
     echo "  Applying $(basename $migration)..."
