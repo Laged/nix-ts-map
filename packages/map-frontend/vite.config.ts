@@ -9,9 +9,11 @@ export default defineConfig({
     nodePolyfills({
       // Whether to polyfill `node:` protocol imports.
       protocolImports: true,
-      // Explicitly include crypto polyfills
-      include: ['crypto', 'stream', 'util', 'buffer', 'process'],
-      // Use the latest crypto implementations
+      // Explicitly include crypto and other Node.js modules
+      include: ['crypto', 'stream', 'util', 'buffer', 'process', 'events'],
+      // Exclude modules that are not needed
+      exclude: [],
+      // Globals to polyfill
       globals: {
         Buffer: true,
         global: true,
@@ -22,7 +24,13 @@ export default defineConfig({
   define: {
     global: 'globalThis',
   },
+  resolve: {
+    alias: {
+      // Ensure crypto is properly polyfilled
+      crypto: 'crypto-browserify',
+    },
+  },
   optimizeDeps: {
-    include: ['crypto'],
+    include: ['crypto-browserify'],
   },
 })
