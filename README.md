@@ -2,6 +2,17 @@
 
 A real-time flight tracking and visualization platform built with Nix, TypeScript, ClickHouse, GraphQL, and React. This project provides a complete pipeline from scraping flight data to rendering it on an interactive, GPU-accelerated map.
 
+## Screenshot
+
+![nix-ts-map in action](docs/images/screenshot.png)
+
+The application displays:
+- **Interactive Map**: GPU-accelerated visualization using Deck.gl and MapLibre, centered on Finland
+- **H3 Hexagon Heatmap**: Blue gradient showing flight density across different hexagon resolutions
+- **Flight Positions**: White circles representing the latest known positions of individual aircraft
+- **Real-time Statistics**: Flights count, trails (total events), and hexagons with data
+- **Resolution Slider**: Adjustable H3 resolution (r0-r10) for different levels of detail
+
 ## TLDR
 
 ```bash
@@ -282,25 +293,20 @@ cd packages/map-frontend && bun dev
 
 ## Database Management
 
-### Reset Database (Start Fresh)
+### Reset Database (Wipe All Data)
 
-To wipe all data and start scraping from scratch:
+To completely wipe all data and start scraping from scratch, use the `nix run .#wipe-db` command:
 
 ```bash
-# Option 1: Using nix run (recommended)
-# Make sure ClickHouse is running first
+# Make sure ClickHouse is running first (e.g., via `nix run` in another terminal)
 nix run .#wipe-db
-
-# Option 2: Using the script directly
-nix develop
-bash scripts/reset-database.sh
 ```
 
 **⚠️ WARNING:** This will:
 - Drop all tables and materialized views
 - Delete all flight data
 - Clear all aggregated hex data
-- Re-apply all migrations to recreate empty schema
+- Re-apply `init-db.sql` to recreate empty schema
 
 This is useful when you want to:
 - Start scraping from scratch
@@ -308,6 +314,12 @@ This is useful when you want to:
 - Reset after schema changes
 
 The script will prompt for confirmation before proceeding.
+
+**Alternative:** You can also run the script directly:
+```bash
+nix develop
+bash scripts/reset-database.sh
+```
 
 ### Initialize Database Manually
 

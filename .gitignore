@@ -69,3 +69,7 @@ status
 
 # Examples (not needed in production)
 examples/
+
+# Documentation images (keep the directory, ignore placeholder files)
+docs/images/*.png
+!docs/images/.gitkeep
