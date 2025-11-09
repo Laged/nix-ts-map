@@ -1,5 +1,6 @@
 import { ApolloServer } from '@apollo/server';
 import fastify from 'fastify';
+import cors from '@fastify/cors';
 import { fastifyApolloDrainPlugin, fastifyApolloHandler } from '@as-integrations/fastify';
 import { readFileSync } from 'fs';
 import { join, dirname } from 'path';
@@ -23,6 +24,13 @@ const typeDefs = readFileSync(
  */
 async function main() {
   const app = fastify();
+
+  // Enable CORS for frontend
+  await app.register(cors, {
+    origin: true, // Allow all origins in development
+    credentials: true,
+    methods: ['GET', 'POST', 'OPTIONS'],
+  });
 
   // Create Apollo Server
   const server = new ApolloServer({
