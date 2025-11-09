@@ -50,7 +50,12 @@ export function FlightMap() {
   // Load cached hex polyfill data based on selected resolution
   useEffect(() => {
     fetch(`/hex_polyfill_r${resolution}.json`)
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
       .then((data: Array<{ hex_id: string; resolution: number; center_lat: number; center_lon: number }>) => {
         setBaseHexGrid(
           data.map((hex) => ({
@@ -61,6 +66,8 @@ export function FlightMap() {
       })
       .catch((err) => {
         console.error(`Failed to load hex polyfill cache for resolution ${resolution}:`, err);
+        // Set empty array on error to prevent rendering issues
+        setBaseHexGrid([]);
       });
   }, [resolution]);
 
