@@ -57,6 +57,7 @@ export function FlightMap() {
         return res.json();
       })
       .then((data: Array<{ hex_id: string; resolution: number; center_lat: number; center_lon: number }>) => {
+        console.log('[FlightMap] Loaded hex polyfill data:', data.length, 'hexes');
         setBaseHexGrid(
           data.map((hex) => ({
             h3Index: hex.hex_id,
@@ -65,7 +66,7 @@ export function FlightMap() {
         );
       })
       .catch((err) => {
-        console.error(`Failed to load hex polyfill cache for resolution ${resolution}:`, err);
+        console.error(`[FlightMap] Failed to load hex polyfill cache for resolution ${resolution}:`, err);
         // Set empty array on error to prevent rendering issues
         setBaseHexGrid([]);
       });
@@ -204,7 +205,7 @@ export function FlightMap() {
     new ScatterplotLayer({
       id: 'scatterplot-layer',
       data: positionsData?.latestAircraftPositions || [],
-      getPosition: (d) => {
+      getPosition: (d: { longitude: number; latitude: number }) => {
         console.log('[FlightMap] Scatterplot position:', { longitude: d.longitude, latitude: d.latitude });
         return [d.longitude, d.latitude];
       },
