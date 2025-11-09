@@ -1,5 +1,5 @@
 import { createClient, type ClickHouseClient } from '@clickhouse/client';
-import type { FlightEvent } from '@map/shared';
+import type { FlightEventWithH3 } from '@map/shared';
 import { config } from './config';
 
 /**
@@ -18,11 +18,11 @@ export function createClickHouseClient(): ClickHouseClient {
  * Insert flight events into ClickHouse database
  * 
  * @param client ClickHouse client instance
- * @param events Array of FlightEvent objects to insert
+ * @param events Array of FlightEventWithH3 objects to insert
  */
 export async function insertFlightEvents(
   client: ClickHouseClient,
-  events: FlightEvent[]
+  events: FlightEventWithH3[]
 ): Promise<void> {
   if (events.length === 0) {
     return;
@@ -41,6 +41,9 @@ export async function insertFlightEvents(
         groundSpeed: event.groundSpeed,
         verticalRate: event.verticalRate,
         source: event.source,
+        h3_res4: event.h3_res4,
+        h3_res6: event.h3_res6,
+        h3_res8: event.h3_res8,
       })),
       format: 'JSONEachRow',
     });

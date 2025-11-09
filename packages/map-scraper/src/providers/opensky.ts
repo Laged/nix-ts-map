@@ -36,9 +36,9 @@ interface OpenSkyResponse {
  * API Documentation: https://openskynetwork.github.io/opensky-api/rest.html#all-state-vectors
  * 
  * @param bbox Bounding box [minLat, minLon, maxLat, maxLon]
- * @returns Array of FlightEvent objects
+ * @returns Array of FlightEventWithH3 objects (enriched with H3 indexes)
  */
-export async function fetchOpenSkyData(bbox: BoundingBox): Promise<FlightEvent[]> {
+export async function fetchOpenSkyData(bbox: BoundingBox): Promise<FlightEventWithH3[]> {
   const [minLat, minLon, maxLat, maxLon] = bbox;
   
   // OpenSky API expects: lamin, lomin, lamax, lomax
@@ -57,8 +57,8 @@ export async function fetchOpenSkyData(bbox: BoundingBox): Promise<FlightEvent[]
       return [];
     }
     
-    // Transform OpenSky state vectors to FlightEvent objects
-    const events: FlightEvent[] = data.states
+    // Transform OpenSky state vectors to FlightEventWithH3 objects
+    const events: FlightEventWithH3[] = data.states
       .filter((state) => {
         // Filter out invalid states (missing position data)
         return (
@@ -67,7 +67,7 @@ export async function fetchOpenSkyData(bbox: BoundingBox): Promise<FlightEvent[]
           state[3] !== null    // time_position
         );
       })
-      .map((state): FlightEvent => {
+      .map((state): FlightEventWithH3 => {
         const icao24 = state[0];
         const timestamp = state[3] || state[4]; // Use time_position or fallback to last_contact
         const longitude = state[5]!;
@@ -76,6 +76,11 @@ export async function fetchOpenSkyData(bbox: BoundingBox): Promise<FlightEvent[]
         const heading = state[10] ?? 0; // true_track
         const groundSpeed = state[9] ?? 0; // velocity in m/s
         const verticalRate = state[11] ?? 0; // vertical_rate in m/s
+        
+        // Calculate H3 indexes at multiple resolutions
+        const h3_res4 = h3.latLngToCell(latitude, longitude, 4);
+        const h3_res6 = h3.latLngToCell(latitude, longitude, 6);
+        const h3_res8 = h3.latLngToCell(latitude, longitude, 8);
         
         return {
           icao24,
@@ -87,6 +92,9 @@ export async function fetchOpenSkyData(bbox: BoundingBox): Promise<FlightEvent[]
           groundSpeed,
           verticalRate,
           source: 'opensky' as DataSource,
+          h3_res4,
+          h3_res6,
+          h3_res8,
         };
       });
     
