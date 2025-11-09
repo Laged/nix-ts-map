@@ -70,7 +70,7 @@
             cd "$PROJECT_ROOT"
             
             # Run the reset database script
-            exec ${./scripts/reset-database.sh}
+            exec bash ${./scripts/reset-database.sh}
           '';
         };
 
