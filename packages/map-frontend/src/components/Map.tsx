@@ -176,20 +176,26 @@ export function FlightMap() {
       id: 'h3-hexagon-base-layer',
       data: mergedHexGrid,
       getHexagon: (d) => d.h3Index,
-      getFillColor: (d) => {
+      getFillColor: (d: { h3Index: string; aircraftCount: number }) => {
         const count = d.aircraftCount || 0;
         if (count > 0) {
-          // Color based on density: blue (low) to red (high)
-          const intensity = Math.min(count / 10, 1);
+          // Blue heatmap: gray (no data) to increasingly blue and opaque (max flights)
+          // Normalize count to 0-1 range based on max count
+          const intensity = Math.min(count / maxAircraftCount, 1);
+          // Blue gradient: from light gray-blue to deep blue
+          // R: decreases from 128 to 0 (darker blue)
+          // G: decreases from 128 to 100 (darker blue)
+          // B: increases from 128 to 255 (more blue)
+          // A: increases from 80 to 255 (more opaque)
           return [
-            Math.floor(intensity * 255),
-            Math.floor((1 - intensity) * 255),
-            128,
-            Math.floor(intensity * 128 + 127),
+            Math.floor(128 * (1 - intensity)), // Red: 128 -> 0
+            Math.floor(128 * (1 - intensity) + 100 * intensity), // Green: 128 -> 100
+            Math.floor(128 + 127 * intensity), // Blue: 128 -> 255
+            Math.floor(80 + 175 * intensity), // Alpha: 80 -> 255 (more opaque)
           ];
         } else {
-          // Gray, more visible for hexes without data
-          return [128, 128, 128, 80];
+          // Gray, almost invisible for hexes without data
+          return [128, 128, 128, 20];
         }
       },
       getElevation: (d) => (d.aircraftCount || 0) * 100,
