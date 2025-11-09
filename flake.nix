@@ -199,7 +199,7 @@
 
               # Frontend
               frontend = {
-                command = "${pkgs.bash}/bin/bash -c 'cd ${toString ./.} && cd packages/map-frontend && ${pkgs.bun}/bin/bun run dev 2>&1 | ${pkgs.coreutils}/bin/tee ${toString ./.}/logs/frontend.log'";
+                command = "${pkgs.bash}/bin/bash -c 'cd packages/map-frontend && PATH=\"$PWD/node_modules/.bin:$PATH\" ${pkgs.bun}/bin/bun run dev 2>&1 | ${pkgs.coreutils}/bin/tee ../../logs/frontend.log'";
                 depends_on = {
                   "graphql".condition = "process_healthy";
                   "install-deps".condition = "process_completed_successfully";
