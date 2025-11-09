@@ -59,12 +59,16 @@
             environment = {
               PC_DISABLE_TUI = false;
             };
+            # Use a different port if 8080 is in use
+            port = 8081;
           };
 
           # Custom settings for all processes
           settings = {
             log_location = "./logs/process-compose";
             log_level = "info";
+            # Enable file logging for all processes
+            log_file = "./logs/process-compose.log";
 
             environment = {
               # ClickHouse connection details
@@ -91,6 +95,9 @@
               "nix-ts-map-db" = {
                 command = "${pkgs.clickhouse}/bin/clickhouse-server";
                 availability.restart = "always";
+                # Log to file
+                stdout = "./logs/clickhouse-stdout.log";
+                stderr = "./logs/clickhouse-stderr.log";
                 readiness_probe = {
                   exec = {
                     command = "${pkgs.clickhouse}/bin/clickhouse-client --query 'SELECT 1'";
@@ -105,11 +112,13 @@
 
               # Install dependencies first
               install-deps = {
-                command = "${pkgs.bun}/bin/bun install";
+                command = "${pkgs.bun}/bin/bun install 2>&1 | tee ./logs/install-deps.log";
                 depends_on = {
                   "nix-ts-map-db".condition = "process_healthy";
                 };
                 availability.restart = "no";
+                stdout = "./logs/install-deps-stdout.log";
+                stderr = "./logs/install-deps-stderr.log";
               };
 
               # Apply database migrations after ClickHouse is ready
@@ -117,6 +126,10 @@
                 command =
                   let
                     setupScript = pkgs.writeShellScript "setup-database" ''
+                      set -e
+                      exec > >(tee -a ./logs/setup-database.log)
+                      exec 2>&1
+                      
                       echo "========================================="
                       echo "nix-ts-map Database Setup"
                       echo "========================================="
@@ -129,9 +142,9 @@
 
                           # Apply migrations
                           echo "→ Applying migrations..."
-                          ${pkgs.clickhouse}/bin/clickhouse-client --multiquery < ${./db/migrations/001_initial_schema.sql}
-                          ${pkgs.clickhouse}/bin/clickhouse-client --multiquery < ${./db/migrations/002_h3_enrichment.sql}
-                          ${pkgs.clickhouse}/bin/clickhouse-client --multiquery < ${./db/migrations/003_materialized_views.sql}
+                          ${pkgs.clickhouse}/bin/clickhouse-client --multiquery < ${./db/migrations/001_initial_schema.sql} 2>&1 | tee -a ./logs/migration-001.log
+                          ${pkgs.clickhouse}/bin/clickhouse-client --multiquery < ${./db/migrations/002_h3_enrichment.sql} 2>&1 | tee -a ./logs/migration-002.log
+                          ${pkgs.clickhouse}/bin/clickhouse-client --multiquery < ${./db/migrations/003_materialized_views.sql} 2>&1 | tee -a ./logs/migration-003.log
                           echo "✓ Migrations applied"
                           echo ""
 
@@ -151,6 +164,8 @@
                   "nix-ts-map-db".condition = "process_healthy";
                 };
                 availability.restart = "no";
+                stdout = "./logs/setup-database-stdout.log";
+                stderr = "./logs/setup-database-stderr.log";
               };
 
               # Scraper service
@@ -161,6 +176,8 @@
                   "install-deps".condition = "process_completed_successfully";
                   "setup-database".condition = "process_completed_successfully";
                 };
+                stdout = "./logs/scraper-stdout.log";
+                stderr = "./logs/scraper-stderr.log";
               };
 
               # GraphQL server
@@ -171,6 +188,8 @@
                   "install-deps".condition = "process_completed_successfully";
                   "setup-database".condition = "process_completed_successfully";
                 };
+                stdout = "./logs/graphql-stdout.log";
+                stderr = "./logs/graphql-stderr.log";
                 readiness_probe = {
                   http_get = {
                     host = "localhost";
@@ -190,6 +209,8 @@
                   "graphql".condition = "process_healthy";
                   "install-deps".condition = "process_completed_successfully";
                 };
+                stdout = "./logs/frontend-stdout.log";
+                stderr = "./logs/frontend-stderr.log";
                 readiness_probe = {
                   http_get = {
                     host = "localhost";
