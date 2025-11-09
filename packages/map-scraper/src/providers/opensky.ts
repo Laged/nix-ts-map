@@ -49,7 +49,7 @@ export async function fetchOpenSkyData(
   let url = `https://opensky-network.org/api/states/all?lamin=${minLat}&lomin=${minLon}&lamax=${maxLat}&lomax=${maxLon}`;
   
   // Add authentication if credentials are provided
-  const headers: HeadersInit = {};
+  const headers: Record<string, string> = {};
   if (credentials?.username && credentials?.password) {
     // OpenSky uses HTTP Basic Auth
     const auth = btoa(`${credentials.username}:${credentials.password}`);
@@ -63,7 +63,7 @@ export async function fetchOpenSkyData(
       throw new Error(`OpenSky API error: ${response.status} ${response.statusText}`);
     }
     
-    const data: OpenSkyResponse = await response.json();
+    const data = await response.json() as OpenSkyResponse;
     
     if (!data.states || data.states.length === 0) {
       return [];
