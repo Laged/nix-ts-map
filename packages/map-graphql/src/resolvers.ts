@@ -74,6 +74,11 @@ export const resolvers: Resolvers<Context> = {
         last_seen: string;
       }>>();
 
+      console.log('[GraphQL] Latest positions query result:', data.length, 'positions');
+      if (data.length > 0) {
+        console.log('[GraphQL] Sample position data:', data.slice(0, 3));
+      }
+
       return data.map((row) => ({
         icao24: row.icao24,
         latitude: row.latitude,
