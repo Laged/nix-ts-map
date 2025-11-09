@@ -13,12 +13,6 @@ export default defineConfig({
       include: ['crypto', 'stream', 'util', 'buffer', 'process', 'events'],
       // Exclude modules that are not needed
       exclude: [],
-      // Globals to polyfill
-      globals: {
-        Buffer: true,
-        global: true,
-        process: true,
-      },
     }),
   ],
   define: {
