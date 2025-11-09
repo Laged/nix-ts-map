@@ -89,7 +89,7 @@
             processes = {
               # ClickHouse database service
               "nix-ts-map-db" = {
-                command = "${pkgs.clickhouse}/bin/clickhouse-server 2>&1 | tee ./logs/clickhouse.log";
+                command = "${pkgs.bash}/bin/bash -c '${pkgs.clickhouse}/bin/clickhouse-server 2>&1 | ${pkgs.coreutils}/bin/tee ./logs/clickhouse.log'";
                 availability.restart = "always";
                 readiness_probe = {
                   exec = {
@@ -105,7 +105,7 @@
 
               # Install dependencies first
               install-deps = {
-                command = "${pkgs.bun}/bin/bun install 2>&1 | tee ./logs/install-deps.log";
+                command = "${pkgs.bash}/bin/bash -c '${pkgs.bun}/bin/bun install 2>&1 | ${pkgs.coreutils}/bin/tee ./logs/install-deps.log'";
                 depends_on = {
                   "nix-ts-map-db".condition = "process_healthy";
                 };
@@ -166,7 +166,7 @@
 
               # Scraper service
               scraper = {
-                command = "${pkgs.bun}/bin/bun run packages/map-scraper/src/index.ts 2>&1 | tee ./logs/scraper.log";
+                command = "${pkgs.bash}/bin/bash -c '${pkgs.bun}/bin/bun run packages/map-scraper/src/index.ts 2>&1 | ${pkgs.coreutils}/bin/tee ./logs/scraper.log'";
                 depends_on = {
                   "nix-ts-map-db".condition = "process_healthy";
                   "install-deps".condition = "process_completed_successfully";
@@ -176,7 +176,7 @@
 
               # GraphQL server
               graphql = {
-                command = "${pkgs.bun}/bin/bun run packages/map-graphql/src/index.ts 2>&1 | tee ./logs/graphql.log";
+                command = "${pkgs.bash}/bin/bash -c '${pkgs.bun}/bin/bun run packages/map-graphql/src/index.ts 2>&1 | ${pkgs.coreutils}/bin/tee ./logs/graphql.log'";
                 depends_on = {
                   "nix-ts-map-db".condition = "process_healthy";
                   "install-deps".condition = "process_completed_successfully";
@@ -196,7 +196,7 @@
 
               # Frontend
               frontend = {
-                command = "${pkgs.bun}/bin/bun run --cwd packages/map-frontend dev 2>&1 | tee ./logs/frontend.log";
+                command = "${pkgs.bash}/bin/bash -c 'cd packages/map-frontend && ${pkgs.bun}/bin/bun run dev 2>&1 | ${pkgs.coreutils}/bin/tee ../logs/frontend.log'";
                 depends_on = {
                   "graphql".condition = "process_healthy";
                   "install-deps".condition = "process_completed_successfully";
