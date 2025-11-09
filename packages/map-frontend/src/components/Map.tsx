@@ -113,32 +113,6 @@ export function FlightMap() {
     }),
   ];
 
-  // Show warning if Mapbox token is missing
-  if (!MAPBOX_TOKEN) {
-    return (
-      <div style={{ 
-        width: '100vw', 
-        height: '100vh', 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'center',
-        background: '#1a1a1a',
-        color: 'white',
-        flexDirection: 'column',
-        gap: '20px'
-      }}>
-        <h2>Mapbox Token Required</h2>
-        <p>Please set VITE_MAPBOX_TOKEN in your .env file</p>
-        <p style={{ fontSize: '0.9em', opacity: 0.7 }}>
-          Get your token from{' '}
-          <a href="https://www.mapbox.com/" target="_blank" rel="noopener noreferrer" style={{ color: '#4CAF50' }}>
-            mapbox.com
-          </a>
-        </p>
-      </div>
-    );
-  }
-
   return (
     <div style={{ width: '100vw', height: '100vh', position: 'relative' }}>
       <DeckGL
