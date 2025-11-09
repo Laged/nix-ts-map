@@ -52,9 +52,18 @@ This monorepo contains:
    ```
 
 5. **Configure environment variables:**
-   - Create `.env` files in each package as needed
-   - For `@map/frontend`: Add `VITE_MAPBOX_TOKEN` (get from [Mapbox](https://www.mapbox.com/))
-   - For `@map/scraper`: Configure `CLICKHOUSE_HOST`, `CLICKHOUSE_USER`, `CLICKHOUSE_PASSWORD`
+   ```bash
+   # Copy the example environment file
+   cp .env.example .env
+   
+   # Edit .env and fill in your values:
+   # - VITE_MAPBOX_TOKEN: Get from [Mapbox](https://www.mapbox.com/)
+   # - OPENSKY_USERNAME/PASSWORD: Optional, for higher rate limits
+   #   Register at https://opensky-network.org/accounts/login/
+   # - Other values: Use defaults or customize as needed
+   ```
+   
+   **Important:** The `.env` file is already in `.gitignore` and will never be committed to git or included in the Nix store. Bun loads `.env` files at runtime.
 
 ## Running the Application
 
