@@ -65,8 +65,6 @@
           settings = {
             log_location = "./logs/process-compose";
             log_level = "info";
-            # Enable file logging for all processes
-            log_file = "./logs/process-compose.log";
 
             environment = {
               # ClickHouse connection details
