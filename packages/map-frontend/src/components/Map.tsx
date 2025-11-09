@@ -7,9 +7,6 @@ import { GET_LATEST_POSITIONS, GET_HEX_GRID } from '../graphql/queries';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useState } from 'react';
 
-// MapLibre doesn't require a token, but we can optionally use Mapbox styles if token is provided
-const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN || '';
-
 // Finland bounds from shared constants
 const FINLAND_BOUNDS = {
   minLat: 59.5,
@@ -146,7 +143,13 @@ export function FlightMap() {
     <div style={{ width: '100vw', height: '100vh', position: 'relative' }}>
       <DeckGL
         viewState={viewState}
-        onViewStateChange={(e) => setViewState(e.viewState)}
+        onViewStateChange={(e) => {
+          if ('viewState' in e) {
+            setViewState(e.viewState);
+          } else {
+            setViewState(e);
+          }
+        }}
         controller={true}
         layers={layers}
       >
