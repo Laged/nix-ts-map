@@ -118,10 +118,9 @@ export function FlightMap() {
       <DeckGL
         viewState={viewState}
         onViewStateChange={(e) => {
-          if ('viewState' in e) {
-            setViewState(e.viewState);
-          } else {
-            setViewState(e);
+          const newViewState = 'viewState' in e ? e.viewState : e;
+          if (newViewState && typeof newViewState === 'object' && 'longitude' in newViewState) {
+            setViewState(newViewState);
           }
         }}
         controller={true}
