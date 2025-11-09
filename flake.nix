@@ -146,6 +146,10 @@
                             echo "✗ Migration 003 failed. Check ./logs/migration-003.log"
                             exit 1
                           }
+                          ${pkgs.clickhouse}/bin/clickhouse-client --multiquery < ${./db/migrations/004_multi_resolution_views.sql} > ./logs/migration-004.log 2>&1 || {
+                            echo "✗ Migration 004 failed. Check ./logs/migration-004.log"
+                            exit 1
+                          }
                           echo "✓ Migrations applied"
                           echo ""
 
