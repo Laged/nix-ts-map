@@ -120,7 +120,13 @@ export function FlightMap() {
         onViewStateChange={(e) => {
           const newViewState = 'viewState' in e ? e.viewState : e;
           if (newViewState && typeof newViewState === 'object' && 'longitude' in newViewState) {
-            setViewState(newViewState);
+            setViewState({
+              longitude: newViewState.longitude ?? viewState.longitude,
+              latitude: newViewState.latitude ?? viewState.latitude,
+              zoom: newViewState.zoom ?? viewState.zoom,
+              pitch: newViewState.pitch ?? viewState.pitch,
+              bearing: newViewState.bearing ?? viewState.bearing,
+            });
           }
         }}
         controller={true}
