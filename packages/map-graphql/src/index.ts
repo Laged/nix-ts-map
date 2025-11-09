@@ -44,7 +44,7 @@ async function main() {
   // GraphQL endpoint
   app.route({
     url: '/graphql',
-    method: ['GET', 'POST'],
+    method: ['GET', 'POST', 'OPTIONS'],
     handler: fastifyApolloHandler(server, {
       context: async () => ({
         dbClient: createDbClient(),
