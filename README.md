@@ -13,6 +13,8 @@ The application displays:
 - **Real-time Statistics**: Flights count, trails (total events), and hexagons with data
 - **Resolution Slider**: Adjustable H3 resolution (r0-r10) for different levels of detail
 
+**Note:** Hex polyfill files for resolutions r0-r7 are included by default. Higher resolution files (r8-r10) are large (>100MB) and excluded from git. Generate them locally with `nix run .#gen-hexes` if needed.
+
 ## TLDR
 
 ```bash

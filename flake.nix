@@ -74,6 +74,23 @@
           '';
         };
 
+        # Generate hex polyfill files
+        packages.gen-hexes = pkgs.writeShellApplication {
+          name = "gen-hexes";
+          runtimeInputs = with pkgs; [
+            bun
+            nodejs_22
+          ];
+          text = ''
+            # Get the project root directory
+            PROJECT_ROOT="''${PROJECT_ROOT:-$(pwd)}"
+            cd "$PROJECT_ROOT"
+            
+            # Run the hex polyfill generation script
+            exec ${pkgs.bun}/bin/bun run ${./scripts/generate-hex-polyfill.ts}
+          '';
+        };
+
         # Process-compose services configuration
         process-compose."nix-ts-map" = {
           # TUI configuration
