@@ -146,7 +146,7 @@ export function FlightMap() {
     <div style={{ width: '100vw', height: '100vh', position: 'relative' }}>
       <DeckGL
         viewState={viewState}
-        onViewStateChange={({ viewState }) => setViewState(viewState)}
+        onViewStateChange={(e) => setViewState(e.viewState)}
         controller={true}
         layers={layers}
       >
