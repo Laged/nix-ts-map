@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<clickhouse>
+    <!-- Path to data directory - all ClickHouse runtime data will be stored here -->
+    <path>./db/clickhouse-data/</path>
+    
+    <!-- Temporary files directory -->
+    <tmp_path>./db/clickhouse-data/tmp/</tmp_path>
+    
+    <!-- User files directory -->
+    <user_files_path>./db/clickhouse-data/user_files/</user_files_path>
+    
+    <!-- Format schemas directory -->
+    <format_schema_path>./db/clickhouse-data/format_schemas/</format_schema_path>
+    
+    <!-- Logger configuration -->
+    <logger>
+        <level>information</level>
+        <log>./logs/clickhouse.log</log>
+        <errorlog>./logs/clickhouse-error.log</errorlog>
+        <console>false</console>
+    </logger>
+    
+    <!-- HTTP and TCP ports -->
+    <http_port>8123</http_port>
+    <tcp_port>9000</tcp_port>
+    
+    <!-- Users configuration -->
+    <users>
+        <default>
+            <password></password>
+            <networks>
+                <ip>::/0</ip>
+            </networks>
+            <profile>default</profile>
+            <quota>default</quota>
+        </default>
+    </users>
+    
+    <!-- Profiles -->
+    <profiles>
+        <default/>
+    </profiles>
+    
+    <!-- Quotas -->
+    <quotas>
+        <default/>
+    </quotas>
+</clickhouse>
+

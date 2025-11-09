@@ -311,7 +311,9 @@ nix-ts-map/
 │   ├── map-graphql/       # GraphQL API server
 │   └── map-frontend/      # React visualization app
 ├── db/
-│   └── migrations/        # ClickHouse schema migrations
+│   ├── clickhouse-config.xml  # ClickHouse server configuration
+│   ├── clickhouse-data/       # ClickHouse runtime data (created at runtime, gitignored)
+│   └── migrations/            # ClickHouse schema migrations
 │       ├── 001_initial_schema.sql
 │       ├── 002_h3_enrichment.sql
 │       ├── 003_materialized_views.sql
