@@ -13,7 +13,10 @@ if [ -z "$CLICKHOUSE_PORT" ]; then
 fi
 
 echo "Applying ClickHouse migrations..."
-cat db/migrations/*.sql | clickhouse-client --host="$CLICKHOUSE_HOST" --port="$CLICKHOUSE_PORT" -m
+for migration in db/migrations/*.sql; do
+  echo "Applying $migration..."
+  clickhouse-client --host="$CLICKHOUSE_HOST" --port="$CLICKHOUSE_PORT" --multiquery < "$migration"
+done
 
 echo "✅ Migrations applied successfully!"
 
