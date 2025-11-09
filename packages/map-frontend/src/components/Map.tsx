@@ -214,6 +214,14 @@ export function FlightMap() {
         }}
         controller={true}
         layers={layers}
+        onError={(error) => {
+          // Suppress WebGL device.limits errors in Firefox - these are non-critical
+          if (error.message?.includes('maxTextureDimension2D') || error.message?.includes('device.limits')) {
+            return;
+          }
+          // Log other errors for debugging
+          console.error('DeckGL error:', error);
+        }}
       >
         <MapLibreMap
           mapStyle="https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
