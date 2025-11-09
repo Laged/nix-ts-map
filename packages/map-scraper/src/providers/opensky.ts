@@ -89,10 +89,19 @@ export async function fetchOpenSkyData(
         const groundSpeed = state[9] ?? 0; // velocity in m/s
         const verticalRate = state[11] ?? 0; // vertical_rate in m/s
         
-        // Calculate H3 indexes at multiple resolutions
+        // Calculate H3 indexes at ALL resolutions (r0-r10) at write-time
+        // This allows efficient querying at any resolution without conversion
+        const h3_res0 = h3.latLngToCell(latitude, longitude, 0);
+        const h3_res1 = h3.latLngToCell(latitude, longitude, 1);
+        const h3_res2 = h3.latLngToCell(latitude, longitude, 2);
+        const h3_res3 = h3.latLngToCell(latitude, longitude, 3);
         const h3_res4 = h3.latLngToCell(latitude, longitude, 4);
+        const h3_res5 = h3.latLngToCell(latitude, longitude, 5);
         const h3_res6 = h3.latLngToCell(latitude, longitude, 6);
+        const h3_res7 = h3.latLngToCell(latitude, longitude, 7);
         const h3_res8 = h3.latLngToCell(latitude, longitude, 8);
+        const h3_res9 = h3.latLngToCell(latitude, longitude, 9);
+        const h3_res10 = h3.latLngToCell(latitude, longitude, 10);
         
         return {
           icao24,
@@ -104,9 +113,17 @@ export async function fetchOpenSkyData(
           groundSpeed,
           verticalRate,
           source: 'opensky' as DataSource,
+          h3_res0,
+          h3_res1,
+          h3_res2,
+          h3_res3,
           h3_res4,
+          h3_res5,
           h3_res6,
+          h3_res7,
           h3_res8,
+          h3_res9,
+          h3_res10,
         };
       });
     
