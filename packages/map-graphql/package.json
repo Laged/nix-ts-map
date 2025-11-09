@@ -16,7 +16,8 @@
     "@clickhouse/client": "^0.2.9",
     "fastify": "^5.1.0",
     "graphql": "^16.9.0",
-    "graphql-tag": "^2.12.6"
+    "graphql-tag": "^2.12.6",
+    "h3-js": "^4.1.0"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^5.0.2",

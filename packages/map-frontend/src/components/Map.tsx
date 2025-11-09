@@ -219,7 +219,6 @@ export function FlightMap() {
       id: 'scatterplot-layer',
       data: positionsData?.latestAircraftPositions || [],
       getPosition: (d: { longitude: number; latitude: number }) => {
-        console.log('[FlightMap] Scatterplot position:', { longitude: d.longitude, latitude: d.latitude });
         return [d.longitude, d.latitude];
       },
       getRadius: 150,

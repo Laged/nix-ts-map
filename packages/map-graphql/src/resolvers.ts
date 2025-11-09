@@ -3,6 +3,7 @@ import { join } from 'path';
 import { GraphQLScalarType, Kind } from 'graphql';
 import type { Resolvers } from './generated/graphql';
 import type { Context } from './context';
+import * as h3 from 'h3-js';
 
 /**
  * DateTime scalar resolver
