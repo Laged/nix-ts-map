@@ -87,7 +87,7 @@ export function FlightMap() {
 
   // Filter out invalid H3 indexes and prepare hex grid data
   const hexGridDataFiltered = (hexGridData?.hexGrid || []).filter(
-    (d) => d.h3Index && d.h3Index !== 'test' && d.h3Index.length > 0
+    (d: { h3Index: string; aircraftCount: number }) => d.h3Index && d.h3Index !== 'test' && d.h3Index.length > 0
   );
 
   const layers = [
