@@ -86,7 +86,11 @@ export const resolvers: Resolvers<Context> = {
       const [minLat, minLon, maxLat, maxLon] = bbox;
       const fromDate = new Date(from * 1000);
       const toDate = new Date(to * 1000);
-      const h3ResColumn = `h3_res${resolution}`;
+      
+      // Map resolution to available H3 column
+      // The materialized view uses h3_res8, so we'll use that for now
+      // In the future, we could create separate views for different resolutions
+      const h3ResColumn = 'h3_res8'; // Materialized view only has h3_res8
 
       // First, get all H3 indexes in the bounding box
       // This is a simplified approach - in production, you'd want to use H3's polyfill
