@@ -45,10 +45,11 @@ const INITIAL_VIEW_STATE = calculateFinlandViewState();
 export function FlightMap() {
   const [viewState, setViewState] = useState(INITIAL_VIEW_STATE);
   const [baseHexGrid, setBaseHexGrid] = useState<Array<{ h3Index: string; aircraftCount: number }>>([]);
+  const [resolution, setResolution] = useState(2); // Default to r2
 
-  // Load cached hex polyfill data
+  // Load cached hex polyfill data based on selected resolution
   useEffect(() => {
-    fetch('/hex_polyfill_r6.json')
+    fetch(`/hex_polyfill_r${resolution}.json`)
       .then((res) => res.json())
       .then((data: Array<{ hex_id: string; resolution: number; center_lat: number; center_lon: number }>) => {
         setBaseHexGrid(
@@ -59,9 +60,9 @@ export function FlightMap() {
         );
       })
       .catch((err) => {
-        console.error('Failed to load hex polyfill cache:', err);
+        console.error(`Failed to load hex polyfill cache for resolution ${resolution}:`, err);
       });
-  }, []);
+  }, [resolution]);
 
   // Calculate bounding box for Finland
   const bbox: [number, number, number, number] = [
@@ -86,7 +87,7 @@ export function FlightMap() {
   // Fetch hex grid data
   const { data: hexGridData, loading: hexGridLoading, error: hexGridError } = useQuery(GET_HEX_GRID, {
     variables: {
-      resolution: 6,
+      resolution: resolution,
       bbox,
       from: oneHourAgo,
       to: now,
@@ -193,11 +194,42 @@ export function FlightMap() {
           reuseMaps
         />
       </DeckGL>
+      {/* Resolution Slider */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 10,
+          right: 10,
+          background: 'rgba(0,0,0,0.8)',
+          color: 'white',
+          padding: '12px 16px',
+          borderRadius: '8px',
+          fontFamily: 'monospace',
+          fontSize: '14px',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+          minWidth: '200px',
+        }}
+      >
+        <div style={{ marginBottom: '8px' }}>
+          <label htmlFor="resolution-slider" style={{ display: 'block', marginBottom: '4px' }}>
+            Resolution: r{resolution}
+          </label>
+          <input
+            id="resolution-slider"
+            type="range"
+            min="0"
+            max="10"
+            value={resolution}
+            onChange={(e) => setResolution(parseInt(e.target.value))}
+            style={{ width: '100%' }}
+          />
+        </div>
+      </div>
       {(positionsLoading || hexGridLoading) && (
         <div
           style={{
             position: 'absolute',
-            top: 10,
+            top: 70,
             right: 10,
             background: 'rgba(0,0,0,0.7)',
             color: 'white',
