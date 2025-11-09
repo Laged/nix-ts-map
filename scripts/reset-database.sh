@@ -50,7 +50,6 @@ DROP VIEW IF EXISTS flights_per_hex_per_minute_r7_mv;
 DROP VIEW IF EXISTS flights_per_hex_per_minute_r8_mv;
 DROP VIEW IF EXISTS flights_per_hex_per_minute_r9_mv;
 DROP VIEW IF EXISTS flights_per_hex_per_minute_r10_mv;
-DROP VIEW IF EXISTS flights_per_hex_per_minute_r10_mv;
 EOF
 
 echo "✓ Materialized views dropped"
