@@ -44,6 +44,24 @@ const INITIAL_VIEW_STATE = calculateFinlandViewState();
 
 export function FlightMap() {
   const [viewState, setViewState] = useState(INITIAL_VIEW_STATE);
+  const [baseHexGrid, setBaseHexGrid] = useState<Array<{ h3Index: string; aircraftCount: number }>>([]);
+
+  // Load cached hex polyfill data
+  useEffect(() => {
+    fetch('/hex_polyfill_r6.json')
+      .then((res) => res.json())
+      .then((data: Array<{ hex_id: string; resolution: number; center_lat: number; center_lon: number }>) => {
+        setBaseHexGrid(
+          data.map((hex) => ({
+            h3Index: hex.hex_id,
+            aircraftCount: 0, // Will be updated when data is available
+          }))
+        );
+      })
+      .catch((err) => {
+        console.error('Failed to load hex polyfill cache:', err);
+      });
+  }, []);
 
   // Calculate bounding box for Finland
   const bbox: [number, number, number, number] = [
@@ -101,7 +119,7 @@ export function FlightMap() {
 
   // Merge base hex grid with data
   const mergedHexGrid = useMemo(() => {
-    return baseHexGrid.map((hex) => ({
+    return baseHexGrid.map((hex: { h3Index: string; aircraftCount: number }) => ({
       ...hex,
       aircraftCount: dataMap.get(hex.h3Index) || 0,
     }));
