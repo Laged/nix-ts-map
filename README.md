@@ -287,7 +287,11 @@ cd packages/map-frontend && bun dev
 To wipe all data and start scraping from scratch:
 
 ```bash
+# Option 1: Using nix run (recommended)
 # Make sure ClickHouse is running first
+nix run .#wipe-db
+
+# Option 2: Using the script directly
 nix develop
 bash scripts/reset-database.sh
 ```

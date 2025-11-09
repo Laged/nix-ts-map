@@ -55,6 +55,25 @@
         # The package name matches the process-compose service name
         packages.default = self'.packages.nix-ts-map;
 
+        # Database reset package
+        packages.wipe-db = pkgs.writeShellApplication {
+          name = "wipe-db";
+          runtimeInputs = with pkgs; [
+            clickhouse
+            bash
+            coreutils
+          ];
+          text = ''
+            # Get the project root directory
+            # This script should be run from the project root
+            PROJECT_ROOT="''${PROJECT_ROOT:-$(pwd)}"
+            cd "$PROJECT_ROOT"
+            
+            # Run the reset database script
+            exec ${./scripts/reset-database.sh}
+          '';
+        };
+
         # Process-compose services configuration
         process-compose."nix-ts-map" = {
           # TUI configuration
