@@ -151,25 +151,13 @@
                           echo "✓ ClickHouse ready"
                           echo ""
 
-                          # Apply migrations
-                          echo "→ Applying migrations..."
-                          ${pkgs.clickhouse}/bin/clickhouse-client --multiquery < ${./db/migrations/001_initial_schema.sql} > ./logs/migration-001.log 2>&1 || {
-                            echo "✗ Migration 001 failed. Check ./logs/migration-001.log"
+                          # Apply database initialization
+                          echo "→ Applying database initialization..."
+                          ${pkgs.clickhouse}/bin/clickhouse-client --multiquery < ${./db/init-db.sql} > ./logs/init-db.log 2>&1 || {
+                            echo "✗ Database initialization failed. Check ./logs/init-db.log"
                             exit 1
                           }
-                          ${pkgs.clickhouse}/bin/clickhouse-client --multiquery < ${./db/migrations/002_h3_enrichment.sql} > ./logs/migration-002.log 2>&1 || {
-                            echo "✗ Migration 002 failed. Check ./logs/migration-002.log"
-                            exit 1
-                          }
-                          ${pkgs.clickhouse}/bin/clickhouse-client --multiquery < ${./db/migrations/003_materialized_views.sql} > ./logs/migration-003.log 2>&1 || {
-                            echo "✗ Migration 003 failed. Check ./logs/migration-003.log"
-                            exit 1
-                          }
-                          ${pkgs.clickhouse}/bin/clickhouse-client --multiquery < ${./db/migrations/004_multi_resolution_views.sql} > ./logs/migration-004.log 2>&1 || {
-                            echo "✗ Migration 004 failed. Check ./logs/migration-004.log"
-                            exit 1
-                          }
-                          echo "✓ Migrations applied"
+                          echo "✓ Database initialized"
                           echo ""
 
                           echo "========================================="

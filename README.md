@@ -309,14 +309,16 @@ This is useful when you want to:
 
 The script will prompt for confirmation before proceeding.
 
-### Apply Migrations Manually
+### Initialize Database Manually
 
-If you need to apply migrations manually:
+If you need to initialize the database manually:
 
 ```bash
 nix develop
 bash scripts/apply-migrations.sh
 ```
+
+This applies `db/init-db.sql` which creates all tables and materialized views.
 
 ## Testing
 
@@ -350,12 +352,9 @@ nix-ts-map/
 │   └── map-frontend/      # React visualization app
 ├── db/
 │   ├── clickhouse-config.xml  # ClickHouse server configuration
-│   ├── clickhouse-data/       # ClickHouse runtime data (created at runtime, gitignored)
-│   └── migrations/            # ClickHouse schema migrations
-│       ├── 001_initial_schema.sql
-│       ├── 002_h3_enrichment.sql
-│       ├── 003_materialized_views.sql
-│       └── 004_multi_resolution_views.sql
+│   ├── clickhouse-data/        # ClickHouse runtime data (created at runtime, gitignored)
+│   ├── init-db.sql             # Database initialization script (creates all tables/views)
+│   └── wipe-db.sql             # Database wipe script (drops all tables/views)
 ├── plans/                 # Sprint planning documents
 ├── scripts/
 │   ├── apply-migrations.sh    # Apply database migrations
