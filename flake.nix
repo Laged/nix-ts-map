@@ -92,7 +92,7 @@
             processes = {
               # ClickHouse database service
               "nix-ts-map-db" = {
-                command = "${pkgs.bash}/bin/bash -c '${pkgs.clickhouse}/bin/clickhouse-server 2>&1 | ${pkgs.coreutils}/bin/tee ./logs/clickhouse.log'";
+                command = "${pkgs.bash}/bin/bash -c 'cd $PWD && ${pkgs.clickhouse}/bin/clickhouse-server --config-file=./db/clickhouse-config.xml 2>&1 | ${pkgs.coreutils}/bin/tee ./logs/clickhouse.log'";
                 availability.restart = "always";
                 readiness_probe = {
                   exec = {
