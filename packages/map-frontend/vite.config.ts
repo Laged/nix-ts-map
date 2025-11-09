@@ -1,30 +1,25 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import { nodePolyfills } from 'vite-plugin-node-polyfills'
+import path from 'path'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [
-    react(),
-    nodePolyfills({
-      // Whether to polyfill `node:` protocol imports.
-      protocolImports: true,
-      // Explicitly include crypto and other Node.js modules
-      include: ['crypto', 'stream', 'util', 'buffer', 'process', 'events'],
-      // Exclude modules that are not needed
-      exclude: [],
-    }),
-  ],
+  plugins: [react()],
   define: {
     global: 'globalThis',
   },
   resolve: {
     alias: {
-      // Ensure crypto is properly polyfilled
+      // Polyfill crypto for browser
       crypto: 'crypto-browserify',
+      // Polyfill other Node.js modules if needed
+      stream: 'stream-browserify',
+      buffer: 'buffer',
+      util: 'util',
+      process: 'process/browser',
     },
   },
   optimizeDeps: {
-    include: ['crypto-browserify'],
+    include: ['crypto-browserify', 'stream-browserify', 'buffer', 'util', 'process'],
   },
 })
