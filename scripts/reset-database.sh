@@ -42,38 +42,14 @@ echo "✓ All tables and views dropped"
 echo ""
 
 echo "→ Clearing ClickHouse data directory..."
-# Ensure ClickHouse data directory exists and is empty
-# ClickHouse needs the base directory structure to exist
+# Note: We don't actually need to clear the directory - dropping tables is enough
+# ClickHouse will clean up table data when tables are dropped
+# But we'll ensure the base directory exists for safety
 mkdir -p db/clickhouse-data/store
 mkdir -p db/clickhouse-data/data
 mkdir -p db/clickhouse-data/tmp
-mkdir -p db/clickhouse-data/flags
-mkdir -p db/clickhouse-data/format_schemas
-mkdir -p db/clickhouse-data/dictionaries_lib
-mkdir -p db/clickhouse-data/named_collections
-mkdir -p db/clickhouse-data/preprocessed_configs
-mkdir -p db/clickhouse-data/user_defined
-mkdir -p db/clickhouse-data/user_files
-mkdir -p db/clickhouse-data/user_scripts
 
-# Remove all contents but keep directory structure
-find db/clickhouse-data -mindepth 1 -type f -delete 2>/dev/null || true
-find db/clickhouse-data -mindepth 1 -type d -empty -delete 2>/dev/null || true
-
-# Recreate necessary directories
-mkdir -p db/clickhouse-data/store
-mkdir -p db/clickhouse-data/data
-mkdir -p db/clickhouse-data/tmp
-mkdir -p db/clickhouse-data/flags
-mkdir -p db/clickhouse-data/format_schemas
-mkdir -p db/clickhouse-data/dictionaries_lib
-mkdir -p db/clickhouse-data/named_collections
-mkdir -p db/clickhouse-data/preprocessed_configs
-mkdir -p db/clickhouse-data/user_defined
-mkdir -p db/clickhouse-data/user_files
-mkdir -p db/clickhouse-data/user_scripts
-
-echo "✓ Data directory cleared"
+echo "✓ Ready for schema recreation"
 echo ""
 
 echo "→ Re-applying init-db.sql..."
