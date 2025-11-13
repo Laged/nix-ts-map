@@ -18,7 +18,9 @@ The application displays:
 ## TLDR
 
 ```bash
-nix develop && nix run
+direnv allow
+OR
+nix develop --impure && nix run
 ```
 
 That's it! This will:
