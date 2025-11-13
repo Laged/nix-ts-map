@@ -2,6 +2,8 @@
 node_modules/
 .pnp
 .pnp.js
+bun.lock
+bun.lockb
 
 # Environment variables
 .env
@@ -25,6 +27,8 @@ logs/
 result
 result-*
 .direnv/
+.direnv
+.devenv
 .drv
 
 # IDE

@@ -3,8 +3,6 @@ version: "0.5"
 processes:
   clickhouse:
     command: clickhouse-server
-    environment:
-      CLICKHOUSE_DB: default
     readiness_probe:
       exec:
         command: clickhouse-client --query "SELECT 1"
@@ -15,41 +13,19 @@ processes:
       failure_threshold: 3
 
   graphql:
-    command: bun run packages/map-graphql/src/index.ts
+    command: ./scripts/with-dotenv.sh --log-file logs/graphql.log -- bun run packages/map-graphql/src/index.ts
     depends_on:
       clickhouse:
         condition: process_healthy
-    environment:
-      CLICKHOUSE_HOST: localhost
-      CLICKHOUSE_PORT: 8123
-      CLICKHOUSE_USER: default
-      CLICKHOUSE_PASSWORD: ""
-      CLICKHOUSE_DATABASE: default
-      PORT: 4000
-      HOST: 0.0.0.0
-
   scraper:
-    command: bun run packages/map-scraper/src/index.ts
+    command: ./scripts/with-dotenv.sh --log-file logs/scraper.log -- bun run packages/map-scraper/src/index.ts
     depends_on:
       clickhouse:
         condition: process_healthy
       graphql:
         condition: process_started
-    environment:
-      CLICKHOUSE_HOST: localhost
-      CLICKHOUSE_PORT: 8123
-      CLICKHOUSE_USER: default
-      CLICKHOUSE_PASSWORD: ""
-      CLICKHOUSE_DATABASE: default
-      FINLAND_BOUNDS: "60,20,70,30"
-      SCRAPE_INTERVAL_SECONDS: 60
-
   frontend:
-    command: cd packages/map-frontend && bun dev
+    command: ./scripts/with-dotenv.sh --chdir packages/map-frontend --log-file logs/frontend.log -- env PATH=./node_modules/.bin:$PATH bun run dev
     depends_on:
       graphql:
         condition: process_started
-    environment:
-      VITE_GRAPHQL_URL: http://localhost:4000/graphql
-      VITE_MAPBOX_TOKEN: ""
-

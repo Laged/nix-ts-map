@@ -2,39 +2,54 @@
   description = "Flight tracking and visualization platform";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
     flake-utils.url = "github:numtide/flake-utils";
     flake-parts.url = "github:hercules-ci/flake-parts";
     process-compose-flake.url = "github:Platonic-Systems/process-compose-flake";
+    devenv.url = "github:cachix/devenv";
+    devenv.inputs.nixpkgs.follows = "nixpkgs";
   };
   
-  # Use the latest Node.js 22.x from nixpkgs
-  # nodejs_22 in nixos-24.11 should be 22.12+ or later
+  # Node.js 22.x comes from nixpkgs; update the nixpkgs input if you need a newer patch release
 
   outputs = inputs:
     inputs.flake-parts.lib.mkFlake { inherit inputs; } {
-      systems = [
-        "x86_64-linux"
-        "aarch64-linux"
-        "x86_64-darwin"
-        "aarch64-darwin"
-      ];
+      systems = inputs.nixpkgs.lib.systems.flakeExposed;
 
       imports = [
         inputs.process-compose-flake.flakeModule
+        inputs.devenv.flakeModule
       ];
 
-      perSystem = { self', pkgs, lib, ... }: {
-        # Development shell
-        devShells.default = pkgs.mkShell {
-          buildInputs = with pkgs; [
+      perSystem = { self', pkgs, lib, ... }:
+        let
+          nodejs = pkgs.nodejs_22;
+
+          withDotenv = "${./scripts/with-dotenv.sh}";
+
+          mkDotenvCommand = { logFile, command, chdir ? null }:
+            let
+              chdirArg =
+                lib.optionalString (chdir != null) "--chdir ${lib.escapeShellArg chdir}";
+              logArg = "--log-file ${lib.escapeShellArg logFile}";
+            in
+            "${pkgs.bash}/bin/bash -c \"PROJECT_ROOT=\\\"$PWD\\\" exec ${withDotenv} ${chdirArg} ${logArg} -- ${command}\"";
+        in {
+        # Development shell (devenv)
+        devenv.shells.default = {
+          packages = with pkgs; [
             bun
-            nodejs_22
+            nodejs
             clickhouse
             process-compose
           ];
 
-          shellHook = ''
+          dotenv = {
+            enable = true;
+            filename = ".env";
+          };
+
+          enterShell = ''
             export CLICKHOUSE_CLIENT_PAGER="less -S"
             echo "🚀 nix-ts-map development environment"
             echo ""
@@ -79,7 +94,7 @@
           name = "gen-hexes";
           runtimeInputs = with pkgs; [
             bun
-            nodejs_22
+            nodejs
           ];
           text = ''
             # Get the project root directory
@@ -100,30 +115,9 @@
             };
           };
 
-          # Custom settings for all processes
           settings = {
             log_location = "./logs/process-compose";
             log_level = "info";
-
-            environment = {
-              # ClickHouse connection details
-              CLICKHOUSE_HOST = "localhost";
-              CLICKHOUSE_PORT = "8123";
-              CLICKHOUSE_USER = "default";
-              CLICKHOUSE_PASSWORD = "";
-              CLICKHOUSE_DATABASE = "default";
-
-              # Scraper config (Finland bounds)
-              FINLAND_BOUNDS = "60,20,70,30";
-              SCRAPE_INTERVAL_SECONDS = "60";
-
-              # GraphQL server config
-              PORT = "4000";
-              HOST = "0.0.0.0";
-
-              # Frontend config
-              VITE_GRAPHQL_URL = "http://localhost:4000/graphql";
-            };
 
             processes = {
               # ClickHouse database service
@@ -197,7 +191,10 @@
 
               # Scraper service
               scraper = {
-                command = "${pkgs.bash}/bin/bash -c '${pkgs.bun}/bin/bun run packages/map-scraper/src/index.ts 2>&1 | ${pkgs.coreutils}/bin/tee ./logs/scraper.log'";
+                command = mkDotenvCommand {
+                  logFile = "logs/scraper.log";
+                  command = "${pkgs.bun}/bin/bun run packages/map-scraper/src/index.ts";
+                };
                 depends_on = {
                   "nix-ts-map-db".condition = "process_healthy";
                   "install-deps".condition = "process_completed_successfully";
@@ -207,7 +204,10 @@
 
               # GraphQL server
               graphql = {
-                command = "${pkgs.bash}/bin/bash -c '${pkgs.bun}/bin/bun run packages/map-graphql/src/index.ts 2>&1 | ${pkgs.coreutils}/bin/tee ./logs/graphql.log'";
+                command = mkDotenvCommand {
+                  logFile = "logs/graphql.log";
+                  command = "${pkgs.bun}/bin/bun run packages/map-graphql/src/index.ts";
+                };
                 depends_on = {
                   "nix-ts-map-db".condition = "process_healthy";
                   "install-deps".condition = "process_completed_successfully";
@@ -227,7 +227,11 @@
 
               # Frontend
               frontend = {
-                command = "${pkgs.bash}/bin/bash -c 'cd packages/map-frontend && PATH=\"$PWD/node_modules/.bin:$PATH\" ${pkgs.bun}/bin/bun run dev 2>&1 | ${pkgs.coreutils}/bin/tee ../../logs/frontend.log'";
+                command = mkDotenvCommand {
+                  logFile = "logs/frontend.log";
+                  chdir = "packages/map-frontend";
+                  command = "env PATH=./node_modules/.bin:$PATH ${pkgs.bun}/bin/bun run dev";
+                };
                 depends_on = {
                   "graphql".condition = "process_healthy";
                   "install-deps".condition = "process_completed_successfully";
@@ -279,4 +283,3 @@
       };
     };
 }
-

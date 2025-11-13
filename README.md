@@ -55,9 +55,11 @@ The frontend will be available at `http://localhost:5173`
    ```
    This provides:
    - Bun (TypeScript runtime & package manager)
-   - Node.js 22.16.0
+   - Node.js 22.x (from nixpkgs)
    - ClickHouse (server & client)
    - process-compose (service orchestration)
+   
+   The shell is powered by devenv, so `.env` (falling back to `.env.example`) is loaded automatically whenever you run `nix develop`.
 
 3. **Install dependencies:**
    ```bash
@@ -68,9 +70,13 @@ The frontend will be available at `http://localhost:5173`
    ```bash
    # Copy the example environment file
    cp .env.example .env
-   
+
    # Edit .env and fill in your values (see OpenSky API section below)
    ```
+   
+   The orchestration commands (`nix run` / `process-compose up`) now source `.env`
+   through `scripts/with-dotenv.sh`, so you only need to maintain the values in
+   that single file.
 
 5. **Generate hex polyfill files (optional):**
    ```bash
